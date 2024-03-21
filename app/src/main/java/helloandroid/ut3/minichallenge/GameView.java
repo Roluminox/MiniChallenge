@@ -1,6 +1,9 @@
 package helloandroid.ut3.minichallenge;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -8,6 +11,7 @@ import androidx.annotation.NonNull;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread thread;
+    private int x=0;
 
     public GameView(Context context) {
         super(context);
@@ -16,7 +20,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
     }
 
-    public void update() {    }
+    public void update() {
+        x = (x + 1) % 300;
+    }
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+        if (canvas != null) {
+            canvas.drawColor(Color.WHITE);
+            Paint paint = new Paint();
+            paint.setColor(Color.rgb(250, 0, 0));
+            canvas.drawRect(x, 100, x+100, 200, paint);
+        }
+    }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
