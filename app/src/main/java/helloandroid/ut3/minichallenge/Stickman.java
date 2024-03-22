@@ -69,4 +69,10 @@ public class Stickman {
     private boolean isInDestructionZone(Stickman stickman, int centerWidth, int centerHeigth) {
         return Math.sqrt(Math.pow(stickman.getX() - centerWidth, 2) + Math.pow(stickman.getY() - centerHeigth, 2)) <= 400;
     }
+
+    // Méthode pour vérifier si un Stickman est dans la zone protégée
+    private boolean isInProtectedZone(int centerX, int centerY, int protectedZoneRadius) {
+        double distanceToCenter = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+        return distanceToCenter <= protectedZoneRadius;
+    }
 }
