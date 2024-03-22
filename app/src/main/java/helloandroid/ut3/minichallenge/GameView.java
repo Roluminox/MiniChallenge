@@ -8,6 +8,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread thread;
     private int screenWidth;
@@ -19,6 +23,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int circleCenterY;
     private int speedX = 5; // Vitesse de déplacement horizontale
     private int speedY = 5; // Vitesse de déplacement verticale
+    private List<Stickman> stickmanList;
 
     private boolean isDark = false; // False si light on
 
@@ -27,6 +32,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         thread = new GameThread(context, getHolder(), this);
         setFocusable(true);
         getHolder().addCallback(this);
+
+        stickmanList = new ArrayList<>();
     }
 
     public void update() {
@@ -75,6 +82,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             paint.setColor(Color.BLUE);
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
 
+            paintStickman(canvas);
         }
     }
 
@@ -109,5 +117,40 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void setIsDark(boolean isDark) {
         this.isDark = isDark;
+    }
+
+    public void paintStickman(Canvas canvas) {
+        Random random = new Random();
+        // Générer un nombre aléatoire entre 0 et 3
+        int randomCoin = random.nextInt(4);
+
+        Stickman newStickman = null;
+        switch(randomCoin) {
+            // Haut
+            case 0:
+                int randomTop = random.nextInt(screenWidth);
+                newStickman = new Stickman(randomTop, 0);
+                break;
+            // Droite
+            case 1:
+                int randomRight = random.nextInt(screenHeight);
+                newStickman = new Stickman(screenWidth-50, randomRight);
+                break;
+            // Gauche
+            case 2:
+                int randomLeft = random.nextInt(screenHeight);
+                newStickman = new Stickman(0, randomLeft);
+                break;
+            // Bas
+            case 3:
+                int randomBottom = random.nextInt(screenWidth);
+                newStickman = new Stickman(randomBottom, screenHeight-50);
+        }
+
+        stickmanList.add(newStickman);
+
+        for(Stickman stickman : stickmanList) {
+            canvas.drawRect(stickman.getStickman(), stickman.getPaint());
+        }
     }
 }
