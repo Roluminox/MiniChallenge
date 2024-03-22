@@ -10,15 +10,22 @@ import android.view.SurfaceView;
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
 import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorListenerCallback {
     private GameThread thread;
     private int screenWidth;
     private int screenHeight;
-    private int circleRadius = 50; // Modifier le rayon du cercle si nécessaire
+    private int centerWidth;
+    private int centerHeigth;
+    private int circleRadius = 30; // Rayon de la boule
     private int circleCenterX;
     private int circleCenterY;
     private int movementX = 0;
     private int movementY = 0;
+    private List<Stickman> stickmanList;
 
     private boolean isDark = false; // False si light on
 
@@ -27,6 +34,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
         getHolder().addCallback(this);
+      
+        stickmanList = new ArrayList<>();
+      
         SensorManagerClass sensorManager = new SensorManagerClass(context, this);
         sensorManager.registerListener();
     }
@@ -50,15 +60,37 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     @Override
     public void draw(Canvas canvas) {
+
+        // Centre de l'écran
+        centerHeigth = getRootView().getHeight() / 2;
+        centerWidth = getRootView().getWidth() / 2;
+
         super.draw(canvas);
         if (canvas != null) {
+            //Gestion de la couleur du canva en fonction de la luminosité
             if (isDark)
                 canvas.drawColor(Color.WHITE);
             else
                 canvas.drawColor(Color.BLACK);
+
+            // Zone de destruction
+            Paint paintDestruction = new Paint();
+            paintDestruction.setColor(Color.YELLOW);
+            canvas.drawCircle(centerWidth, centerHeigth, 400, paintDestruction);
+
+            // Zone à protéger
+            Paint paintZone = new Paint();
+            paintZone.setColor(Color.GREEN);
+            paintZone.setStyle(Paint.Style.STROKE); // Style du contour du cercle
+            paintZone.setStrokeWidth(5); // Épaisseur
+            canvas.drawCircle(centerWidth, centerHeigth, 100, paintZone);
+
+            // Boule qui bouge
             Paint paint = new Paint();
-            paint.setColor(Color.RED);
+            paint.setColor(Color.BLUE);
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
+
+            paintStickman(canvas);
         }
     }
 
@@ -100,5 +132,40 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public void onAccValueChange(double[] accValue) {
         this.movementX = (int) accValue[1];
         this.movementY = (int) accValue[0];
+    }
+
+    public void paintStickman(Canvas canvas) {
+        Random random = new Random();
+        // Générer un nombre aléatoire entre 0 et 3
+        int randomCoin = random.nextInt(4);
+
+        Stickman newStickman = null;
+        switch(randomCoin) {
+            // Haut
+            case 0:
+                int randomTop = random.nextInt(screenWidth);
+                newStickman = new Stickman(randomTop, 0);
+                break;
+            // Droite
+            case 1:
+                int randomRight = random.nextInt(screenHeight);
+                newStickman = new Stickman(screenWidth-50, randomRight);
+                break;
+            // Gauche
+            case 2:
+                int randomLeft = random.nextInt(screenHeight);
+                newStickman = new Stickman(0, randomLeft);
+                break;
+            // Bas
+            case 3:
+                int randomBottom = random.nextInt(screenWidth);
+                newStickman = new Stickman(randomBottom, screenHeight-50);
+        }
+
+        stickmanList.add(newStickman);
+
+        for(Stickman stickman : stickmanList) {
+            canvas.drawRect(stickman.getStickman(), stickman.getPaint());
+        }
     }
 }

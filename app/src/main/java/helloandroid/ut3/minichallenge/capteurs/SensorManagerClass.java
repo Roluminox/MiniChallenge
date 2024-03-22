@@ -4,9 +4,7 @@ import android.hardware.SensorEventListener;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 
 public class SensorManagerClass implements SensorEventListener {
     private SensorManager sensorManager;
