@@ -29,15 +29,16 @@ public class Stickman {
     }
 
     public void update(Context context, int centerX, int centerY, int centerWidth, int centerHeigth, boolean isDark) {
-        x = x-centerX < 0 ? x+deplacementX : x-deplacementX;
-        y = y-centerY < 0 ? y+deplacementY : y-deplacementY;
+        int div = isDark ? 1 : 3;
+        x = x-centerX < 0 ? x+(deplacementX/div) : x-(deplacementX/div);
+        y = y-centerY < 0 ? y+(deplacementY/div) : y-(deplacementY/div);
 
         // Vérifiez si le nouveau Stickman est dans la zone de destruction
         if (isInDestructionZone(this, centerWidth, centerHeigth)) {
             setDestructible();
         }
 
-        stickman = new RectF(x, y, x+50, y+50);
+        stickman = new RectF(x, y, x+30, y+30);
     }
 
     private void initStickman(int screenWidth, int screenHeight) {
