@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Protect the \nGrail</string>
+    <string name="app_name">Protect the\nGrail</string>
 
     <!-- END ACTIVITY -->
     <string name="end_game">Fin de la partie</string>
