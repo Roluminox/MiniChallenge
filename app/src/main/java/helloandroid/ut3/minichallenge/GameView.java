@@ -43,6 +43,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int[] nbStickmanVague = {5,10,20,40,60,100,200,400,800};
     private int nbvague = 0;
     private int nbstickmanSend;
+    private Bitmap background;
 
     public GameView(Context context) {
         super(context);
@@ -57,6 +58,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         sensorManager.registerListener();
 
         activeTimer = createTimer(1500);
+
+        // Image en arrière-plan
+        background = BitmapFactory.decodeResource(getResources(), R.drawable.test);
     }
 
     private Timer createTimer(int time){
@@ -125,7 +129,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         if (canvas != null) {
             //Gestion de la couleur du canva en fonction de la luminosité
             if (isDark)
-                canvas.drawColor(Color.WHITE);
+                canvas.drawBitmap(background, 0, 0, null);
             else
                 canvas.drawColor(Color.BLACK);
 
