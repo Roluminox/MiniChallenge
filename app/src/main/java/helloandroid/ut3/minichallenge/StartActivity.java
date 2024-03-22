@@ -18,6 +18,7 @@ public class StartActivity extends Activity {
             finish();
             Intent intent = new Intent(StartActivity.this, MainActivity.class);
             startActivity(intent);
+            finish();
         });
     }
 }
