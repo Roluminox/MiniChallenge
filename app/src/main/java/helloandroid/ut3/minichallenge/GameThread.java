@@ -8,7 +8,7 @@ import android.view.SurfaceHolder;
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
 import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
 
-public class GameThread extends Thread implements SensorListenerCallback {
+public class GameThread extends Thread {
 
     private SurfaceHolder surfaceHolder;
 
@@ -22,8 +22,6 @@ public class GameThread extends Thread implements SensorListenerCallback {
         super();
         this.surfaceHolder = surfaceHolder;
         this.gameView = gameView;
-        SensorManagerClass sensorManager = new SensorManagerClass(context, this);
-        sensorManager.registerListener();
     }
 
     public GameThread() {
@@ -57,19 +55,8 @@ public class GameThread extends Thread implements SensorListenerCallback {
         }
     }
 
-
-
     public void setRunning(boolean isRunning) {
         running = isRunning;
     }
 
-    @Override
-    public void onLuxValueChange(float luxValue) {
-        Log.i("eee","Lumière "+String.valueOf(luxValue));
-    }
-
-    @Override
-    public void onAccValueChange(float accValue) {
-        Log.i("eee",String.valueOf(accValue));
-    }
 }

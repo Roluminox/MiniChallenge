@@ -4,12 +4,16 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
-public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
+import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
+
+public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorListenerCallback {
     private GameThread thread;
     private int screenWidth;
     private int screenHeight;
@@ -18,25 +22,32 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int circleCenterY;
     private int speedX = 5; // Vitesse de déplacement horizontale
     private int speedY = 5; // Vitesse de déplacement verticale
+    private int movementX = 0;
+    private int movementY = 0;
 
     public GameView(Context context) {
         super(context);
         thread = new GameThread(context, getHolder(), this);
         setFocusable(true);
         getHolder().addCallback(this);
+        SensorManagerClass sensorManager = new SensorManagerClass(context, this);
+        sensorManager.registerListener();
     }
 
     public void update() {
         // Mettre à jour les coordonnées du cercle pour le déplacer
-        circleCenterX += speedX;
-        circleCenterY += speedY;
-
-        // Si le cercle atteint les bords de l'écran, inverser la direction
-        if (circleCenterX + circleRadius >= screenWidth || circleCenterX - circleRadius <= 0) {
-            speedX *= -1;
+        if(
+                movementX > 0 && (circleCenterX + circleRadius) + movementX <= screenWidth ||
+                movementX < 0 && (circleCenterX - circleRadius) + movementX >= 0
+        ){
+            circleCenterX += movementX;
         }
-        if (circleCenterY + circleRadius >= screenHeight || circleCenterY - circleRadius <= 0) {
-            speedY *= -1;
+
+        if(
+                movementY > 0 && (circleCenterY + circleRadius) + movementY <= screenHeight ||
+                movementY < 0 && (circleCenterY - circleRadius) + movementY >= 0
+        ) {
+            circleCenterY += movementY;
         }
     }
 
@@ -78,5 +89,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
             retry = false;
         }
+    }
+
+    @Override
+    public void onLuxValueChange(float luxValue) {
+        //Do nothing
+    }
+
+    @Override
+    public void onAccValueChange(double[] accValue) {
+        this.movementX = (int) accValue[1];
+        this.movementY = (int) accValue[0];
     }
 }
