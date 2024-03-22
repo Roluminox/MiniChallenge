@@ -35,7 +35,7 @@ public class Stickman {
     }
 
     public void update(Context context, int centerX, int centerY, int centerWidth, int centerHeigth, boolean isDark) {
-        int div = isDark ? 1 : 3;
+        int div = isDark ? 3 : 1;
         x = x-centerX < 0 ? x+(deplacementX/div) : x-(deplacementX/div);
         y = y-centerY < 0 ? y+(deplacementY/div) : y-(deplacementY/div);
 
