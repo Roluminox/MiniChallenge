@@ -6,11 +6,15 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
 import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
+import helloandroid.ut3.minichallenge.objects.Bush;
+import helloandroid.ut3.minichallenge.objects.Obstacle;
+import helloandroid.ut3.minichallenge.objects.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +37,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private List<Stickman> stickmanList;
     private int maxStickman;
 
+    private List<Obstacle> obstacles;
+
     private boolean isDark = false; // False si light on
 
     public GameView(Context context) {
@@ -42,6 +48,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         getHolder().addCallback(this);
 
         stickmanList = new ArrayList<>();
+        obstacles = new ArrayList<>();
+
         maxStickman = 10;
 
         SensorManagerClass sensorManager = new SensorManagerClass(context, this);
@@ -51,7 +59,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                addStickman();
+                stickmanList.add(new Stickman(screenWidth, screenHeight));
             }
         };
 
@@ -59,7 +67,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         timer.scheduleAtFixedRate(task, 2000,2000);
     }
 
-    public void update() {
+    public void updateBoule() {
         // Mettre à jour les coordonnées du cercle pour le déplacer
         if(
                 movementX > 0 && (circleCenterX + circleRadius) + movementX <= screenWidth ||
@@ -76,7 +84,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         for(Stickman st : stickmanList){
-            if(stickmanTouchCircle(st, circleCenterX, circleCenterY, circleRadius) && st.isDestructible()){
+            if(st.isDestructible() && stickmanTouchCircle(st, circleCenterX, circleCenterY, circleRadius)){
              stickmanList.remove(st);
             }
         }
@@ -84,12 +92,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     @Override
     public void draw(Canvas canvas) {
+        super.draw(canvas);
 
         // Centre de l'écran
         centerHeigth = getRootView().getHeight() / 2;
         centerWidth = getRootView().getWidth() / 2;
 
-        super.draw(canvas);
         if (canvas != null) {
             //Gestion de la couleur du canva en fonction de la luminosité
             if (isDark)
@@ -115,6 +123,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
 
             paintStickman(canvas);
+            paintObstacles(canvas);
+
+            updateBoule();
         }
     }
 
@@ -125,6 +136,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         // Initialiser les coordonnées du centre du cercle au centre de l'écran
         circleCenterX = screenWidth / 2;
         circleCenterY = screenHeight / 2;
+
+        Random random = new Random();
+
+        for (int i = 0; i < 10; ++i) {
+            obstacles.add(new Tree(random.nextInt(screenWidth), random.nextInt(screenHeight)));
+            obstacles.add(new Bush(random.nextInt(screenWidth), random.nextInt(screenHeight)));
+        }
     }
 
     @Override
@@ -160,7 +178,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     public void paintStickman(Canvas canvas) {
         if(stickmanList.size() < maxStickman) {
-            addStickman();
+            stickmanList.add(new Stickman(screenWidth, screenHeight));
         }
 
         for(Stickman stickman : stickmanList) {
@@ -169,36 +187,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
     }
 
-    public void addStickman() {
-        Random random = new Random();
-        // Générer un nombre aléatoire entre 0 et 3
-        int randomCoin = random.nextInt(4);
+    public boolean onTouchEvent(MotionEvent event) {
+        float touchX = event.getX();
+        float touchY = event.getY();
 
-        Stickman newStickman = null;
-        switch(randomCoin) {
-            // Haut
-            case 0:
-                int randomTop = random.nextInt(screenWidth);
-                newStickman = new Stickman(randomTop, 0);
+        Stickman stickmanTouched = null;
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                for (Stickman stickman : stickmanList) {
+                    if (stickman.isDestructible() && stickman.getStickman().contains(touchX, touchY)) {
+                        stickmanList.remove(stickman);
+                        break;
+                    }
+                }
+                invalidate();
                 break;
-            // Droite
-            case 1:
-                int randomRight = random.nextInt(screenHeight);
-                newStickman = new Stickman(screenWidth-50, randomRight);
-                break;
-            // Gauche
-            case 2:
-                int randomLeft = random.nextInt(screenHeight);
-                newStickman = new Stickman(0, randomLeft);
-                break;
-            // Bas
-            case 3:
-                int randomBottom = random.nextInt(screenWidth);
-                newStickman = new Stickman(randomBottom, screenHeight-50);
         }
-
-        stickmanList.add(newStickman);
+        return true;
     }
 
-
+    public void paintObstacles(Canvas canvas) {
+        for (Obstacle obstacle : obstacles) {
+            canvas.drawRect(obstacle.getBounds(), obstacle.getColor());
+        }
+    }
 }

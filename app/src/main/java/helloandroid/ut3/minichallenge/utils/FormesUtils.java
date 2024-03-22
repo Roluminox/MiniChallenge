@@ -1,5 +1,4 @@
 package helloandroid.ut3.minichallenge.utils;
-
 import helloandroid.ut3.minichallenge.Stickman;
 
 public class FormesUtils {
