@@ -44,6 +44,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int nbvague = 0;
     private int nbstickmanSend;
     private Bitmap background;
+    private int canvaWidth;
+    private int canvaHeigth;
+    private Bitmap scaledBackground;
 
     public GameView(Context context) {
         super(context);
@@ -59,8 +62,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         activeTimer = createTimer(1500);
 
+        canvaHeigth = 0;
+        canvaWidth = 0;
+
         // Image en arrière-plan
-        background = BitmapFactory.decodeResource(getResources(), R.drawable.test);
+        background = BitmapFactory.decodeResource(getResources(), R.drawable.background);
     }
 
     private Timer createTimer(int time){
@@ -74,6 +80,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         timer.scheduleAtFixedRate(timerTask, time,time);
         return timer;
+    }
+
+    public void updateBackground(){
+        scaledBackground = Bitmap.createScaledBitmap(background, canvaWidth, canvaHeigth, true);
     }
 
     private void sendStickman(){
@@ -127,9 +137,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         centerWidth = getRootView().getWidth() / 2;
 
         if (canvas != null) {
+            if (canvaWidth == 0 && canvaHeigth == 0){
+                canvaWidth = canvas.getWidth();
+                canvaHeigth = canvas.getHeight();
+
+                updateBackground();
+            }
+
             //Gestion de la couleur du canva en fonction de la luminosité
-            if (isDark)
-                canvas.drawBitmap(background, 0, 0, null);
+            if (isDark) {
+                // Dessiner l'image d'arrière-plan sur tout le canvas
+                canvas.drawBitmap(scaledBackground, 0, 0, null);
+            }
             else
                 canvas.drawColor(Color.BLACK);
 
