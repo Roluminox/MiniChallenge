@@ -59,7 +59,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         timer.scheduleAtFixedRate(task, 2000,2000);
     }
 
-    public void update() {
+    public void updateBoule() {
         // Mettre à jour les coordonnées du cercle pour le déplacer
         if(
                 movementX > 0 && (circleCenterX + circleRadius) + movementX <= screenWidth ||
@@ -76,7 +76,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         for(Stickman st : stickmanList){
-            if(stickmanTouchCircle(st, circleCenterX, circleCenterY, circleRadius) && st.isDestructible()){
+            if(st.isDestructible() && stickmanTouchCircle(st, circleCenterX, circleCenterY, circleRadius)){
              stickmanList.remove(st);
             }
         }
@@ -84,12 +84,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     @Override
     public void draw(Canvas canvas) {
+        super.draw(canvas);
 
         // Centre de l'écran
         centerHeigth = getRootView().getHeight() / 2;
         centerWidth = getRootView().getWidth() / 2;
 
-        super.draw(canvas);
         if (canvas != null) {
             //Gestion de la couleur du canva en fonction de la luminosité
             if (isDark)
@@ -115,6 +115,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
 
             paintStickman(canvas);
+
+            updateBoule();
         }
     }
 
