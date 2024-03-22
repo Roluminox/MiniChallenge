@@ -4,6 +4,8 @@ import static helloandroid.ut3.minichallenge.utils.FormesUtils.stickmanTouchCirc
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -113,12 +115,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             paintDestruction.setColor(Color.YELLOW);
             canvas.drawCircle(centerWidth, centerHeigth, 300, paintDestruction);
 
-            // Zone à protéger
-            Paint paintZone = new Paint();
-            paintZone.setColor(Color.GREEN);
-            paintZone.setStyle(Paint.Style.STROKE); // Style du contour du cercle
-            paintZone.setStrokeWidth(5); // Épaisseur
-            canvas.drawCircle(centerWidth, centerHeigth, 70, paintZone);
+            // Affichage de l'image du Graal
+            Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.graal);
+            Bitmap resizedImage = Bitmap.createScaledBitmap(originalImage, 100, 100, false);
+            canvas.drawBitmap(resizedImage, centerWidth - resizedImage.getWidth() / 2, centerHeigth - resizedImage.getHeight() / 2, null);
+
 
             // Boule qui bouge
             Paint paint = new Paint();
