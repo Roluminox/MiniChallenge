@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
@@ -28,6 +29,7 @@ import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,11 +45,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int circleCenterY;
     private int movementX = 0;
     private int movementY = 0;
-    private List<Stickman> stickmanList;
+    private List<Stickman> stickmanList = new ArrayList<>();
     private boolean isDark = false; // False si light on
     private int score = 0;
     private Context context;
-
+    private List<Drawable> characters = new ArrayList<>();
+    private Random random = new Random();
     private int[] nbStickmanVague = {5,10,20,40,60,100,200,400,800};
     private int nbvague = 0;
     private int nbstickmanSend;
@@ -65,8 +68,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         setFocusable(true);
         getHolder().addCallback(this);
 
-        stickmanList = new ArrayList<>();
-
         // Charger l'image à partir des ressources
         Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.graal);
         this.resizedImage = Bitmap.createScaledBitmap(originalImage, 100, 100, false);
@@ -75,6 +76,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         sensorManager.registerListener();
 
         activeTimer = createTimer(1500);
+
+        characters.add(ContextCompat.getDrawable(context, R.drawable.archer_stickman));
+        characters.add(ContextCompat.getDrawable(context, R.drawable.chevalier_stickman));
+        characters.add(ContextCompat.getDrawable(context, R.drawable.mage_stickman));
 
         canvaHeigth = 0;
         canvaWidth = 0;
@@ -102,7 +107,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     private void sendStickman(){
         if(nbstickmanSend != nbStickmanVague[nbvague]) {
-            stickmanList.add(new Stickman(screenWidth, screenHeight, getResources()));
+            stickmanList.add(new Stickman(screenWidth, screenHeight, characters.get(random.nextInt(characters.size()))));
             nbstickmanSend++;
         } else if(stickmanList.size() == 0) {
             nbvague++;
@@ -169,7 +174,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             // Score
             Paint colorText = new Paint();
             colorText.setTextSize(60);
-            colorText.setColor(Color.GRAY);
+            colorText.setColor(Color.BLACK);
             canvas.drawText(String.valueOf(score), 50, 100, colorText);
 
             // Vague
@@ -180,7 +185,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             paintDestruction.setColor(Color.YELLOW);
             paintDestruction.setStyle(Paint.Style.STROKE); // Style du contour du cercle
             paintDestruction.setStrokeWidth(5); // Épaisseur
-            canvas.drawCircle(centerWidth, centerHeigth, 300, paintDestruction);
+            canvas.drawCircle(centerWidth, centerHeigth, 250, paintDestruction);
 
             // Appliquer le dégradé au halo
             Paint haloPaint = new Paint();

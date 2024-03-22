@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import java.util.ArrayList;
@@ -22,25 +23,18 @@ public class Stickman {
     private float y;
     private float deplacementX;
     private float deplacementY;
-
-    private RectF stickman;
-
     private RectF flashlight;
     private int sizeFlashlight = 100;
     private int startAngle = 0;
     private int sweepAngle = 30;
-
-    private Paint paint;
-    private int color;
     private boolean isDestructible;
     private Drawable character ;
 
 
-    public Stickman(int screenWidth, int screenHeight, Resources res) {
+    public Stickman(int screenWidth, int screenHeight, Drawable character) {
         initStickman(screenWidth, screenHeight);
         this.isDestructible = false;
-
-        character = ResourcesCompat.getDrawable(res, R.drawable.archer_stickman, null);
+        this.character = character;
     }
 
     public void update(Context context, int centerX, int centerY, int centerWidth, int centerHeigth, boolean isDark) {
@@ -54,7 +48,7 @@ public class Stickman {
         }
 
         // Update de la lampe si dans le noir
-        if (true) {
+        if (isDark) {
             flashlight = new RectF(x - sizeFlashlight, y - sizeFlashlight, x + sizeFlashlight + 50, y + sizeFlashlight + 50);
             // Calcul startAngle and sweepAngle
             double deltaX = centerWidth - x;
