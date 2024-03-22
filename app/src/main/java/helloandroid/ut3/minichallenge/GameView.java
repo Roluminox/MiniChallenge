@@ -6,12 +6,17 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RadialGradient;
+import android.graphics.Shader;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
 import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
+import helloandroid.ut3.minichallenge.objects.Bush;
+import helloandroid.ut3.minichallenge.objects.Obstacle;
+import helloandroid.ut3.minichallenge.objects.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +38,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int movementY = 0;
     private List<Stickman> stickmanList;
     private int maxStickman;
-
     private boolean isDark = false; // False si light on
 
     public GameView(Context context) {
@@ -43,6 +47,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         getHolder().addCallback(this);
 
         stickmanList = new ArrayList<>();
+
         maxStickman = 10;
 
         SensorManagerClass sensorManager = new SensorManagerClass(context, this);
@@ -52,7 +57,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                addStickman();
+                stickmanList.add(new Stickman(screenWidth, screenHeight));
             }
         };
 
@@ -163,45 +168,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     public void paintStickman(Canvas canvas) {
         if(stickmanList.size() < maxStickman) {
-            addStickman();
+            stickmanList.add(new Stickman(screenWidth, screenHeight));
         }
 
         for(Stickman stickman : stickmanList) {
-            stickman.update(screenWidth/2, screenHeight/2, centerWidth, centerHeigth);
+            stickman.update(screenWidth/2, screenHeight/2, centerWidth, centerHeigth, circleRadius);
             canvas.drawRect(stickman.getStickman(), stickman.getPaint());
         }
-    }
-
-    public void addStickman() {
-        Random random = new Random();
-        // Générer un nombre aléatoire entre 0 et 3
-        int randomCoin = random.nextInt(4);
-
-        Stickman newStickman = null;
-        switch (randomCoin) {
-            // Haut
-            case 0:
-                int randomTop = random.nextInt(screenWidth);
-                newStickman = new Stickman(randomTop, 0, screenWidth / 2, screenHeight / 2);
-                break;
-            // Droite
-            case 1:
-                int randomRight = random.nextInt(screenHeight);
-                newStickman = new Stickman(screenWidth - 50, randomRight, screenWidth / 2, screenHeight / 2);
-                break;
-            // Gauche
-            case 2:
-                int randomLeft = random.nextInt(screenHeight);
-                newStickman = new Stickman(0, randomLeft, screenWidth / 2, screenHeight / 2);
-                break;
-            // Bas
-            case 3:
-                int randomBottom = random.nextInt(screenWidth);
-                newStickman = new Stickman(randomBottom, screenHeight - 50, screenWidth / 2, screenHeight / 2);
-        }
-
-        stickmanList.add(newStickman);
-
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -224,5 +197,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         return true;
     }
 
-
+    public void paintObstacles(Canvas canvas) {
+        for (Obstacle obstacle : obstacles) {
+            canvas.drawRect(obstacle.getBounds(), obstacle.getColor());
+        }
+    }
 }
