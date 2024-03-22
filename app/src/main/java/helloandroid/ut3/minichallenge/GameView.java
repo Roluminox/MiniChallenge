@@ -172,6 +172,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void paintStickman(Canvas canvas) {
+        Paint paintBlack = new Paint();
+
+        paintBlack.setColor(Color.BLACK);
+        Paint paintWhite = new Paint();
+        paintWhite.setColor(Color.WHITE);
+
         if(stickmanList.size() < maxStickman) {
             stickmanList.add(new Stickman(screenWidth, screenHeight));
         }
@@ -187,8 +193,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             if (isDark)
                 canvas.drawRect(stickman.getStickman(), stickman.getPaint());
             else {
-                canvas.drawRect(stickman.getStickman(), new Paint(Color.BLACK));
+                canvas.drawRect(stickman.getStickman(), paintBlack);
             }
+            canvas.drawArc(stickman.getFlashlight(), stickman.getStartAngle(), stickman.getSweepAngle(), true, paintWhite);
         }
     }
 
