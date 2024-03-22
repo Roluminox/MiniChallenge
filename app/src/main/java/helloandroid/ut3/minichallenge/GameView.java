@@ -196,10 +196,4 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
         return true;
     }
-
-    public void paintObstacles(Canvas canvas) {
-        for (Obstacle obstacle : obstacles) {
-            canvas.drawRect(obstacle.getBounds(), obstacle.getColor());
-        }
-    }
 }

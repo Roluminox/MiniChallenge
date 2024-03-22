@@ -18,21 +18,16 @@ public class Stickman {
     private Paint paint;
     private int color;
     private boolean isDestructible;
-    private int protectedZoneRadius;
 
-    public Stickman(int x, int y, int centerX, int centerY) {
+    public Stickman(int screenWidth, int screenHeight) {
         initStickman(screenWidth, screenHeight);
-        this.x = x;
-        this.y = y;
-        this.deplacementY = (Math.max(centerY, Math.abs(y)) - Math.min(centerY, Math.abs(y))) / 100f;
-        this.deplacementX = (Math.max(centerX, Math.abs(x)) - Math.min(centerX, Math.abs(x))) / 100f;
         this.color = Color.RED;
         this.isDestructible = false;
         this.paint = new Paint();
         this.paint.setColor(Color.RED);
     }
 
-    public void update(int centerX, int centerY, int centerWidth, int centerHeigth) {
+    public void update(int centerX, int centerY, int centerWidth, int centerHeigth, int protectedZoneRadius) {
         x = x-centerX < 0 ? x+deplacementX : x-deplacementX;
         y = y-centerY < 0 ? y+deplacementY : y-deplacementY;
 
@@ -75,6 +70,10 @@ public class Stickman {
                 this.x = random.nextInt(screenWidth);
                 this.y = screenHeight-50;
         }
+
+        this.deplacementY = (Math.max(screenHeight/2, Math.abs(y)) - Math.min(screenHeight/2, Math.abs(y))) / 100f;
+        this.deplacementX = (Math.max(screenWidth/2, Math.abs(x)) - Math.min(screenWidth/2, Math.abs(x))) / 100f;
+
         stickman = new RectF(this.x, this.y, this.x+50, this.y+50);
     }
 
