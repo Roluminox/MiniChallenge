@@ -130,10 +130,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         if (canvas != null) {
             //Gestion de la couleur du canva en fonction de la luminosité
-            if (isDark)
-                canvas.drawColor(Color.WHITE);
-            else
+            if (isDark) {
                 canvas.drawColor(Color.BLACK);
+            } else {
+                canvas.drawColor(Color.WHITE);
+            }
 
             // Score
             Paint colorText = new Paint();
@@ -205,7 +206,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     @Override
     public void onLuxValueChange(float luxValue) {
-        this.isDark = (luxValue > 10);
+        this.isDark = (luxValue < 10);
     }
 
     @Override
@@ -215,8 +216,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void paintStickman(Canvas canvas) {
-        Paint paintBlack = new Paint();
-        paintBlack.setColor(Color.BLACK);
+        // Setup Paint Flashlight
 
         for(Stickman stickman : stickmanList) {
             stickman.update(this.context, screenWidth/2, screenHeight/2, centerWidth, centerHeigth, isDark);
@@ -226,19 +226,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 intent.putExtra("score", String.valueOf(score));
                 context.startActivity(intent);
             }
-            if (isDark)
+
+            if (isDark) {
+                int[] colors = {Color.YELLOW, Color.TRANSPARENT};
+                float[] positions = {0.0f, 1.0f};
+                RadialGradient radialGradient = new RadialGradient(stickman.getX(), stickman.getY(), 100, colors, positions, Shader.TileMode.CLAMP);
+                Paint paintWhite = new Paint();
+                paintWhite.setShader(radialGradient);
+                canvas.drawArc(stickman.getFlashlight(), stickman.getStartAngle(), stickman.getSweepAngle(), true, paintWhite);
+            } else {
                 canvas.drawRect(stickman.getStickman(), stickman.getPaint());
-            else {
-                canvas.drawRect(stickman.getStickman(), paintBlack);
             }
-
-            int[] colors = {Color.YELLOW, Color.TRANSPARENT};
-            float[] positions = {0.0f, 1.0f};
-            RadialGradient radialGradient = new RadialGradient(stickman.getX(), stickman.getY(), 100, colors, positions, Shader.TileMode.CLAMP);
-            Paint paintWhite = new Paint();
-            paintWhite.setShader(radialGradient);
-
-            canvas.drawArc(stickman.getFlashlight(), stickman.getStartAngle(), stickman.getSweepAngle(), true, paintWhite);
         }
     }
 
