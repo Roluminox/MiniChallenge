@@ -3,6 +3,7 @@ package helloandroid.ut3.minichallenge;
 import static helloandroid.ut3.minichallenge.utils.FormesUtils.stickmanTouchCircle;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -39,6 +40,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private List<Stickman> stickmanList;
     private int maxStickman;
     private boolean isDark = false; // False si light on
+    private int score = 0;
     private Context context;
 
     public GameView(Context context) {
@@ -84,8 +86,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         for(Stickman st : stickmanList){
-            if(st.isDestructible() && stickmanTouchCircle(st, circleCenterX, circleCenterY, circleRadius)){
-             stickmanList.remove(st);
+            if(stickmanTouchCircle(st, circleCenterX, circleCenterY, circleRadius)){
+                score += 3;
+                stickmanList.remove(st);
             }
         }
     }
@@ -104,6 +107,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 canvas.drawColor(Color.WHITE);
             else
                 canvas.drawColor(Color.BLACK);
+
+            // Score
+            Paint colorText = new Paint();
+            colorText.setTextSize(100);
+            colorText.setColor(Color.GRAY);
+            canvas.drawText(String.valueOf(score), 50, 100, colorText);
 
             // Zone de destruction
             Paint paintDestruction = new Paint();
@@ -174,7 +183,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         for(Stickman stickman : stickmanList) {
-            stickman.update(this.context, screenWidth/2, screenHeight/2, centerWidth, centerHeigth, circleRadius, isDark, thread);
+            stickman.update(this.context, screenWidth/2, screenHeight/2, centerWidth, centerHeigth, isDark);
+            if(stickman.isInProtectedZone(screenWidth/2, screenHeight/2, circleRadius)) {
+                thread.setRunning(false);
+                Intent intent = new Intent(context, EndActivity.class);
+                intent.putExtra("score", String.valueOf(score));
+                context.startActivity(intent);
+            }
             if (isDark)
                 canvas.drawRect(stickman.getStickman(), stickman.getPaint());
             else {
@@ -193,6 +208,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             case MotionEvent.ACTION_DOWN:
                 for (Stickman stickman : stickmanList) {
                     if (stickman.isDestructible() && stickman.getStickman().contains(touchX, touchY)) {
+                        score++;
                         stickmanList.remove(stickman);
                         break;
                     }
