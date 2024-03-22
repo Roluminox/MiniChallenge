@@ -28,9 +28,11 @@ public class Stickman {
         this.paint.setColor(Color.RED);
     }
 
-    public void update(Context context, int centerX, int centerY, int centerWidth, int centerHeigth, int protectedZoneRadius, GameThread thread ) {
-        x = x-centerX < 0 ? x+deplacementX : x-deplacementX;
-        y = y-centerY < 0 ? y+deplacementY : y-deplacementY;
+    public void update(Context context, int centerX, int centerY, int centerWidth, int centerHeigth, int protectedZoneRadius, boolean isDark, GameThread thread ) {
+
+        int div = isDark ? 1 : 3;
+        x = x-centerX < 0 ? x+(deplacementX/div) : x-(deplacementX/div);
+        y = y-centerY < 0 ? y+(deplacementY/div) : y-(deplacementY/div);
 
         // Vérifiez si le nouveau Stickman est dans la zone de destruction
         if (isInDestructionZone(this, centerWidth, centerHeigth)) {

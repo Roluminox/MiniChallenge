@@ -174,7 +174,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         for(Stickman stickman : stickmanList) {
-            stickman.update(this.context, screenWidth/2, screenHeight/2, centerWidth, centerHeigth, circleRadius, thread);
+            stickman.update(this.context, screenWidth/2, screenHeight/2, centerWidth, centerHeigth, circleRadius, isDark, thread);
             if (isDark)
                 canvas.drawRect(stickman.getStickman(), stickman.getPaint());
             else {
