@@ -185,7 +185,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             paintDestruction.setColor(Color.YELLOW);
             paintDestruction.setStyle(Paint.Style.STROKE); // Style du contour du cercle
             paintDestruction.setStrokeWidth(5); // Épaisseur
-            canvas.drawCircle(centerWidth, centerHeigth, 300, paintDestruction);
+            canvas.drawCircle(centerWidth, centerHeigth, 250, paintDestruction);
 
             // Appliquer le dégradé au halo
             Paint haloPaint = new Paint();
