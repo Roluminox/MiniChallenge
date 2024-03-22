@@ -97,7 +97,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             int time = 1500 - (200*nbvague);
             if(time <= 0){
                 time = 100;
-                stickmanList.add(new Stickman(screenWidth, screenHeight, getResources()));
             }
             //New time for timer
             activeTimer.cancel();
