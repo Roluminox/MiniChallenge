@@ -52,7 +52,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                addStickman();
+                stickmanList.add(new Stickman(screenWidth, screenHeight));
             }
         };
 
@@ -163,7 +163,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     public void paintStickman(Canvas canvas) {
         if(stickmanList.size() < maxStickman) {
-            addStickman();
+            stickmanList.add(new Stickman(screenWidth, screenHeight));
         }
 
         for(Stickman stickman : stickmanList) {
@@ -171,57 +171,4 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             canvas.drawRect(stickman.getStickman(), stickman.getPaint());
         }
     }
-
-    public void addStickman() {
-        Random random = new Random();
-        // Générer un nombre aléatoire entre 0 et 3
-        int randomCoin = random.nextInt(4);
-
-        Stickman newStickman = null;
-        switch(randomCoin) {
-            // Haut
-            case 0:
-                int randomTop = random.nextInt(screenWidth);
-                newStickman = new Stickman(randomTop, 0);
-                break;
-            // Droite
-            case 1:
-                int randomRight = random.nextInt(screenHeight);
-                newStickman = new Stickman(screenWidth-50, randomRight);
-                break;
-            // Gauche
-            case 2:
-                int randomLeft = random.nextInt(screenHeight);
-                newStickman = new Stickman(0, randomLeft);
-                break;
-            // Bas
-            case 3:
-                int randomBottom = random.nextInt(screenWidth);
-                newStickman = new Stickman(randomBottom, screenHeight-50);
-        }
-
-        stickmanList.add(newStickman);
-    }
-
-    public boolean onTouchEvent(MotionEvent event) {
-        float touchX = event.getX();
-        float touchY = event.getY();
-
-        Stickman stickmanTouched = null;
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                for (Stickman stickman : stickmanList) {
-                    if (stickman.isDestructible() && stickman.getStickman().contains(touchX, touchY)) {
-                        stickmanList.remove(stickman);
-                        break;
-                    }
-                }
-                invalidate();
-                break;
-        }
-        return true;
-    }
-
-
 }

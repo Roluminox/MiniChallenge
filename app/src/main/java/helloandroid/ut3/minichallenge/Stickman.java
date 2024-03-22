@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
+import java.util.Random;
+
 public class Stickman {
 
     private int x;
@@ -13,12 +15,10 @@ public class Stickman {
     private int color;
     private boolean isDestructible;
 
-    public Stickman(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Stickman(int screenWidth, int screenHeight) {
+        initStickman(screenWidth, screenHeight);
         this.color = Color.RED;
         this.isDestructible = false;
-        this.stickman = new RectF(this.x, this.y, this.x+50, this.y+50);
         this.paint = new Paint();
         this.paint.setColor(Color.RED);
     }
@@ -34,6 +34,35 @@ public class Stickman {
         }
 
         stickman = new RectF(x, y, x+50, y+50);
+    }
+
+    private void initStickman(int screenWidth, int screenHeight) {
+        Random random = new Random();
+        // Générer un nombre aléatoire entre 0 et 3
+        int randomCoin = random.nextInt(4);
+
+        switch(randomCoin) {
+            // Haut
+            case 0:
+                this.x = random.nextInt(screenWidth);
+                this.y = 0;
+                break;
+            // Droite
+            case 1:
+                this.x = screenWidth-50;
+                this.y = random.nextInt(screenHeight);
+                break;
+            // Gauche
+            case 2:
+                this.x = 0;
+                this.y = random.nextInt(screenHeight);
+                break;
+            // Bas
+            case 3:
+                this.x = random.nextInt(screenWidth);
+                this.y = screenHeight-50;
+        }
+        stickman = new RectF(this.x, this.y, this.x+50, this.y+50);
     }
 
     public RectF getStickman() {
