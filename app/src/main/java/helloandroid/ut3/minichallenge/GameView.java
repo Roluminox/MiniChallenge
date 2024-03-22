@@ -182,7 +182,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         for(Stickman stickman : stickmanList) {
-            stickman.update(screenWidth/2, screenHeight/2, centerWidth, centerHeigth);
+            stickman.update(screenWidth/2, screenHeight/2, centerWidth, centerHeigth, circleRadius);
             canvas.drawRect(stickman.getStickman(), stickman.getPaint());
         }
     }
