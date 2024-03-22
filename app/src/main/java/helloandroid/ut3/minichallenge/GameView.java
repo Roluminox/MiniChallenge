@@ -1,19 +1,27 @@
 package helloandroid.ut3.minichallenge;
 
 import static helloandroid.ut3.minichallenge.utils.FormesUtils.stickmanTouchCircle;
+import static helloandroid.ut3.minichallenge.utils.FormesUtils.touchStickman;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import androidx.core.content.res.ResourcesCompat;
 
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
 import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
@@ -48,6 +56,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int canvaHeigth;
     private Bitmap scaledBackground;
 
+    private Bitmap resizedImage;
+
     public GameView(Context context) {
         super(context);
         this.context = context;
@@ -56,6 +66,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         getHolder().addCallback(this);
 
         stickmanList = new ArrayList<>();
+
+        // Charger l'image à partir des ressources
+        Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.graal);
+        this.resizedImage = Bitmap.createScaledBitmap(originalImage, 100, 100, false);
 
         SensorManagerClass sensorManager = new SensorManagerClass(context, this);
         sensorManager.registerListener();
@@ -88,7 +102,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     private void sendStickman(){
         if(nbstickmanSend != nbStickmanVague[nbvague]) {
-            stickmanList.add(new Stickman(screenWidth, screenHeight));
+            stickmanList.add(new Stickman(screenWidth, screenHeight, getResources()));
             nbstickmanSend++;
         } else if(stickmanList.size() == 0) {
             nbvague++;
@@ -146,20 +160,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
             //Gestion de la couleur du canva en fonction de la luminosité
             if (isDark) {
+                canvas.drawColor(Color.BLACK);
+            } else {
                 // Dessiner l'image d'arrière-plan sur tout le canvas
                 canvas.drawBitmap(scaledBackground, 0, 0, null);
             }
-            else
-                canvas.drawColor(Color.BLACK);
 
             // Score
             Paint colorText = new Paint();
-            colorText.setTextSize(100);
+            colorText.setTextSize(60);
             colorText.setColor(Color.GRAY);
             canvas.drawText(String.valueOf(score), 50, 100, colorText);
 
             // Vague
-            canvas.drawText("Vague : "+String.valueOf(nbvague+1), centerWidth, 100, colorText);
+            canvas.drawText("Vague : "+String.valueOf(nbvague+1), centerWidth+110, 100, colorText);
 
             // Zone de destruction
             Paint paintDestruction = new Paint();
@@ -168,17 +182,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             paintDestruction.setStrokeWidth(5); // Épaisseur
             canvas.drawCircle(centerWidth, centerHeigth, 300, paintDestruction);
 
-
-            // Charger l'image à partir des ressources
-            Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.graal);
-            Bitmap resizedImage = Bitmap.createScaledBitmap(originalImage, 100, 100, false);
-
-            // Définir le dégradé radial pour le halo
-            RadialGradient gradient = new RadialGradient(centerWidth, centerHeigth, Math.max(resizedImage.getWidth(), resizedImage.getHeight()) * 0.75f,
-                    new int[]{Color.YELLOW, Color.TRANSPARENT}, null, Shader.TileMode.CLAMP);
-
             // Appliquer le dégradé au halo
             Paint haloPaint = new Paint();
+            RadialGradient gradient = new RadialGradient(centerWidth, centerHeigth, Math.max(resizedImage.getWidth(), resizedImage.getHeight()) * 0.75f,
+                            new int[]{Color.YELLOW, Color.TRANSPARENT}, null, Shader.TileMode.CLAMP);
             haloPaint.setShader(gradient);
 
             // Dessiner le halo lumineux autour de l'image
@@ -229,7 +236,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     @Override
     public void onLuxValueChange(float luxValue) {
-        this.isDark = (luxValue > 10);
+        this.isDark = (luxValue < 10);
     }
 
     @Override
@@ -239,6 +246,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void paintStickman(Canvas canvas) {
+
         for(Stickman stickman : stickmanList) {
             stickman.update(this.context, screenWidth/2, screenHeight/2, centerWidth, centerHeigth, isDark);
             if(stickman.isInProtectedZone(screenWidth/2, screenHeight/2, circleRadius)) {
@@ -247,10 +255,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 intent.putExtra("score", String.valueOf(score));
                 context.startActivity(intent);
             }
-            if (isDark)
-                canvas.drawRect(stickman.getStickman(), stickman.getPaint());
-            else {
-                canvas.drawRect(stickman.getStickman(), new Paint(Color.BLACK));
+
+            if (isDark) {
+                int[] colors = {Color.YELLOW, Color.TRANSPARENT};
+                float[] positions = {0.0f, 1.0f};
+                RadialGradient radialGradient = new RadialGradient(stickman.getX(), stickman.getY(), 100, colors, positions, Shader.TileMode.CLAMP);
+                Paint paintWhite = new Paint();
+                paintWhite.setShader(radialGradient);
+                canvas.drawArc(stickman.getFlashlight(), stickman.getStartAngle(), stickman.getSweepAngle(), true, paintWhite);
+            } else {
+                canvas.drawBitmap(stickman.getCharacter(), stickman.getX(), stickman.getY(), null);
             }
         }
     }
@@ -262,7 +276,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 for (Stickman stickman : stickmanList) {
-                    if (stickman.isDestructible() && stickman.getStickman().contains(touchX, touchY)) {
+                    if (stickman.isDestructible() && touchStickman(stickman, touchX, touchY)) {
                         score++;
                         stickmanList.remove(stickman);
                         break;

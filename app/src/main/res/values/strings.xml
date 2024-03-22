@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">Tower Phone</string>
+    <string name="app_name">Protect the \nGrail</string>
 
     <!-- END ACTIVITY -->
     <string name="end_game">Fin de la partie</string>
+    <string name="regle">Bienvenue dans Protect the Grail.\nDans ce jeu, vous devez survivre à plusieurs vagues sans que les ennemis n\'atteignent le Graal.\nPour cela, n\'hésitez pas à les écraser avec votre doigt quand ils sont proches du Graal ou avec la boule en tournant votre téléphone. En cachant le capteur de luminosité, vous pouvez ralentir vos ennemis perdus dans la pénombre.</string>
 
 </resources>
