@@ -21,7 +21,7 @@ import java.util.TimerTask;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorListenerCallback {
     private GameThread thread;
-    private Timer timer;
+    private Timer activeTimer;
     private int screenWidth;
     private int screenHeight;
     private int centerWidth;
@@ -32,10 +32,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int movementX = 0;
     private int movementY = 0;
     private List<Stickman> stickmanList;
-    private int maxStickman;
     private boolean isDark = false; // False si light on
     private int score = 0;
     private Context context;
+
+    private int[] nbStickmanVague = {5,10,20,40,60,100,200,400,800};
+    private int nbvague = 0;
+    private int nbstickmanSend;
 
     public GameView(Context context) {
         super(context);
@@ -46,21 +49,41 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         stickmanList = new ArrayList<>();
 
-        maxStickman = 10;
-
         SensorManagerClass sensorManager = new SensorManagerClass(context, this);
         sensorManager.registerListener();
 
-        timer = new Timer();
-        TimerTask task = new TimerTask() {
+        activeTimer = createTimer(1500);
+    }
+
+    private Timer createTimer(int time){
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                stickmanList.add(new Stickman(screenWidth, screenHeight));
+                sendStickman();
             }
         };
 
-        // Déclenchement après 2 secondes (2000 millisecondes)
-        timer.scheduleAtFixedRate(task, 2000,2000);
+        timer.scheduleAtFixedRate(timerTask, time,time);
+        return timer;
+    }
+
+    private void sendStickman(){
+        if(nbstickmanSend != nbStickmanVague[nbvague]) {
+            stickmanList.add(new Stickman(screenWidth, screenHeight));
+            nbstickmanSend++;
+        } else if(stickmanList.size() == 0) {
+            nbvague++;
+            nbstickmanSend = 0;
+
+            int time = 1500 - (200*nbvague);
+            if(time <= 0){
+                time = 100;
+            }
+            //New time for timer
+            activeTimer.cancel();
+            activeTimer = createTimer(time);
+        }
     }
 
     public void updateBoule() {
@@ -107,6 +130,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             colorText.setTextSize(100);
             colorText.setColor(Color.GRAY);
             canvas.drawText(String.valueOf(score), 50, 100, colorText);
+
+            // Vague
+            canvas.drawText("Vague : "+String.valueOf(nbvague+1), centerWidth, 100, colorText);
 
             // Zone de destruction
             Paint paintDestruction = new Paint();
@@ -172,10 +198,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void paintStickman(Canvas canvas) {
-        if(stickmanList.size() < maxStickman) {
-            stickmanList.add(new Stickman(screenWidth, screenHeight));
-        }
-
         for(Stickman stickman : stickmanList) {
             stickman.update(this.context, screenWidth/2, screenHeight/2, centerWidth, centerHeigth, isDark);
             if(stickman.isInProtectedZone(screenWidth/2, screenHeight/2, circleRadius)) {
@@ -195,8 +217,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public boolean onTouchEvent(MotionEvent event) {
         float touchX = event.getX();
         float touchY = event.getY();
-
-        Stickman stickmanTouched = null;
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
