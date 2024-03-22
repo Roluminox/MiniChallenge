@@ -60,7 +60,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         for(Stickman st : stickmanList){
-            if(stickmanTouchCircle(st, circleCenterX, circleCenterY, circleRadius)){
+            if(stickmanTouchCircle(st, circleCenterX, circleCenterY, circleRadius) && st.isDestructible()){
              stickmanList.remove(st);
             }
         }
