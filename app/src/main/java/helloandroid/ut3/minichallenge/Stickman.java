@@ -6,16 +6,21 @@ import android.graphics.RectF;
 
 public class Stickman {
 
-    private int x;
-    private int y;
+    private float x;
+    private float y;
+    private float deplacementX;
+    private float deplacementY;
+
     private RectF stickman;
     private Paint paint;
     private int color;
     private boolean isDestructible;
 
-    public Stickman(int x, int y) {
+    public Stickman(int x, int y, int centerX, int centerY) {
         this.x = x;
         this.y = y;
+        this.deplacementY = (Math.max(centerY, Math.abs(y)) - Math.min(centerY, Math.abs(y))) / 100f;
+        this.deplacementX = (Math.max(centerX, Math.abs(x)) - Math.min(centerX, Math.abs(x))) / 100f;
         this.color = Color.RED;
         this.isDestructible = false;
         this.stickman = new RectF(this.x, this.y, this.x+50, this.y+50);
@@ -24,8 +29,8 @@ public class Stickman {
     }
 
     public void update(int centerX, int centerY, int centerWidth, int centerHeigth) {
-        x = x-centerX < 0 ? x+1 : x-1;
-        y = y-centerY < 0 ? y+1 : y-1;
+        x = x-centerX < 0 ? x+deplacementX : x-deplacementX;
+        y = y-centerY < 0 ? y+deplacementY : y-deplacementY;
 
         // Vérifiez si le nouveau Stickman est dans la zone de destruction
         if (isInDestructionZone(this, centerWidth, centerHeigth)) {
@@ -44,11 +49,11 @@ public class Stickman {
         return this.paint;
     }
 
-    public int getX() {
+    public float getX() {
         return this.x;
     }
 
-    public int getY() {
+    public float getY() {
         return this.y;
     }
 

@@ -178,29 +178,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         int randomCoin = random.nextInt(4);
 
         Stickman newStickman = null;
-        switch(randomCoin) {
+        switch (randomCoin) {
             // Haut
             case 0:
                 int randomTop = random.nextInt(screenWidth);
-                newStickman = new Stickman(randomTop, 0);
+                newStickman = new Stickman(randomTop, 0, screenWidth / 2, screenHeight / 2);
                 break;
             // Droite
             case 1:
                 int randomRight = random.nextInt(screenHeight);
-                newStickman = new Stickman(screenWidth-50, randomRight);
+                newStickman = new Stickman(screenWidth - 50, randomRight, screenWidth / 2, screenHeight / 2);
                 break;
             // Gauche
             case 2:
                 int randomLeft = random.nextInt(screenHeight);
-                newStickman = new Stickman(0, randomLeft);
+                newStickman = new Stickman(0, randomLeft, screenWidth / 2, screenHeight / 2);
                 break;
             // Bas
             case 3:
                 int randomBottom = random.nextInt(screenWidth);
-                newStickman = new Stickman(randomBottom, screenHeight-50);
+                newStickman = new Stickman(randomBottom, screenHeight - 50, screenWidth / 2, screenHeight / 2);
         }
 
         stickmanList.add(newStickman);
+
     }
 
     public boolean onTouchEvent(MotionEvent event) {
