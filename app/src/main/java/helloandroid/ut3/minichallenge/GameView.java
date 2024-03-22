@@ -1,19 +1,27 @@
 package helloandroid.ut3.minichallenge;
 
 import static helloandroid.ut3.minichallenge.utils.FormesUtils.stickmanTouchCircle;
+import static helloandroid.ut3.minichallenge.utils.FormesUtils.touchStickman;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import androidx.core.content.res.ResourcesCompat;
 
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
 import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
@@ -80,7 +88,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     private void sendStickman(){
         if(nbstickmanSend != nbStickmanVague[nbvague]) {
-            stickmanList.add(new Stickman(screenWidth, screenHeight));
+            stickmanList.add(new Stickman(screenWidth, screenHeight, getResources()));
             nbstickmanSend++;
         } else if(stickmanList.size() == 0) {
             nbvague++;
@@ -89,6 +97,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             int time = 1500 - (200*nbvague);
             if(time <= 0){
                 time = 100;
+                stickmanList.add(new Stickman(screenWidth, screenHeight, getResources()));
             }
             //New time for timer
             activeTimer.cancel();
@@ -216,7 +225,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void paintStickman(Canvas canvas) {
-        // Setup Paint Flashlight
 
         for(Stickman stickman : stickmanList) {
             stickman.update(this.context, screenWidth/2, screenHeight/2, centerWidth, centerHeigth, isDark);
@@ -235,7 +243,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 paintWhite.setShader(radialGradient);
                 canvas.drawArc(stickman.getFlashlight(), stickman.getStartAngle(), stickman.getSweepAngle(), true, paintWhite);
             } else {
-                canvas.drawRect(stickman.getStickman(), stickman.getPaint());
+                canvas.drawBitmap(stickman.getCharacter(), stickman.getX(), stickman.getY(), null);
             }
         }
     }
@@ -247,7 +255,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 for (Stickman stickman : stickmanList) {
-                    if (stickman.isDestructible() && stickman.getStickman().contains(touchX, touchY)) {
+                    if (stickman.isDestructible() && touchStickman(stickman, touchX, touchY)) {
                         score++;
                         stickmanList.remove(stickman);
                         break;
