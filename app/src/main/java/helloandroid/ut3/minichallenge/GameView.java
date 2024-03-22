@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RadialGradient;
+import android.graphics.Shader;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -113,17 +115,32 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             // Zone de destruction
             Paint paintDestruction = new Paint();
             paintDestruction.setColor(Color.YELLOW);
+            paintDestruction.setStyle(Paint.Style.STROKE); // Style du contour du cercle
+            paintDestruction.setStrokeWidth(5); // Épaisseur
             canvas.drawCircle(centerWidth, centerHeigth, 300, paintDestruction);
 
-            // Affichage de l'image du Graal
+
+            // Charger l'image à partir des ressources
             Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.graal);
             Bitmap resizedImage = Bitmap.createScaledBitmap(originalImage, 100, 100, false);
-            canvas.drawBitmap(resizedImage, centerWidth - resizedImage.getWidth() / 2, centerHeigth - resizedImage.getHeight() / 2, null);
 
+            // Définir le dégradé radial pour le halo
+            RadialGradient gradient = new RadialGradient(centerWidth, centerHeigth, Math.max(resizedImage.getWidth(), resizedImage.getHeight()) * 0.75f,
+                    new int[]{Color.YELLOW, Color.TRANSPARENT}, null, Shader.TileMode.CLAMP);
+
+            // Appliquer le dégradé au halo
+            Paint haloPaint = new Paint();
+            haloPaint.setShader(gradient);
+
+            // Dessiner le halo lumineux autour de l'image
+            canvas.drawCircle(centerWidth, centerHeigth, Math.max(resizedImage.getWidth(), resizedImage.getHeight()) * 0.75f, haloPaint);
+
+            // Affichage de l'image du Graal
+            canvas.drawBitmap(resizedImage, centerWidth - resizedImage.getWidth() / 2, centerHeigth - resizedImage.getHeight() / 2, null);
 
             // Boule qui bouge
             Paint paint = new Paint();
-            paint.setColor(Color.BLUE);
+            paint.setColor(Color.BLACK);
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
 
             paintStickman(canvas);
