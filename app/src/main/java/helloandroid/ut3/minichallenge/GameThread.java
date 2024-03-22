@@ -1,9 +1,14 @@
 package helloandroid.ut3.minichallenge;
 
+import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
-public class GameThread extends Thread {
+import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
+import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
+
+public class GameThread extends Thread implements SensorListenerCallback {
 
     private SurfaceHolder surfaceHolder;
 
@@ -13,10 +18,12 @@ public class GameThread extends Thread {
 
     private boolean running;
 
-    public GameThread(SurfaceHolder surfaceHolder, GameView gameView) {
+    public GameThread(Context context, SurfaceHolder surfaceHolder, GameView gameView) {
         super();
         this.surfaceHolder = surfaceHolder;
         this.gameView = gameView;
+        SensorManagerClass sensorManager = new SensorManagerClass(context, this);
+        sensorManager.registerListener();
     }
 
     public GameThread() {
@@ -50,7 +57,19 @@ public class GameThread extends Thread {
         }
     }
 
+
+
     public void setRunning(boolean isRunning) {
         running = isRunning;
+    }
+
+    @Override
+    public void onLuxValueChange(float luxValue) {
+        Log.i("eee","Lumière "+String.valueOf(luxValue));
+    }
+
+    @Override
+    public void onAccValueChange(float accValue) {
+        Log.i("eee",String.valueOf(accValue));
     }
 }
