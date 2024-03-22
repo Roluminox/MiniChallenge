@@ -7,13 +7,14 @@ import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import androidx.annotation.NonNull;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread thread;
     private int screenWidth;
     private int screenHeight;
-    private int circleRadius = 30; // Modifier le rayon du cercle si nécessaire
+    private int centerWidth;
+    private int centerHeigth;
+    private int circleRadius = 30; // Rayon de la boule
     private int circleCenterX;
     private int circleCenterY;
     private int speedX = 5; // Vitesse de déplacement horizontale
@@ -29,11 +30,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
-        // Mettre à jour les coordonnées du cercle pour le déplacer
+        // Mise à jour des coordonnées de la boule pour la déplacer
         circleCenterX += speedX;
         circleCenterY += speedY;
 
-        // Si le cercle atteint les bords de l'écran, inverser la direction
+        // Si la boule atteint les bords de l'écran, inverser la direction
         if (circleCenterX + circleRadius >= screenWidth || circleCenterX - circleRadius <= 0) {
             speedX *= -1;
         }
@@ -44,8 +45,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void draw(Canvas canvas) {
+
+        // Centre de l'écran
+        centerHeigth = getRootView().getHeight() / 2;
+        centerWidth = getRootView().getWidth() / 2;
+
         super.draw(canvas);
         if (canvas != null) {
+            //Gestion de la couleur du canva en fonction de la luminosité
             if (isDark)
                 canvas.drawColor(Color.WHITE);
             else
@@ -54,18 +61,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             // Zone de destruction
             Paint paintDestruction = new Paint();
             paintDestruction.setColor(Color.YELLOW);
-            canvas.drawCircle(getRootView().getWidth() / 2, getRootView().getHeight() / 2, 350, paintDestruction);
+            canvas.drawCircle(centerWidth, centerHeigth, 400, paintDestruction);
 
             // Zone à protéger
             Paint paintZone = new Paint();
             paintZone.setColor(Color.GREEN);
             paintZone.setStyle(Paint.Style.STROKE); // Style du contour du cercle
             paintZone.setStrokeWidth(5); // Épaisseur
-            canvas.drawCircle(getRootView().getWidth() / 2, getRootView().getHeight() / 2, 100, paintZone);
+            canvas.drawCircle(centerWidth, centerHeigth, 100, paintZone);
 
             // Boule qui bouge
             Paint paint = new Paint();
-            paint.setColor(Color.BLACK);
+            paint.setColor(Color.BLUE);
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
 
         }
