@@ -12,6 +12,9 @@ import android.view.SurfaceView;
 
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
 import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
+import helloandroid.ut3.minichallenge.objects.Bush;
+import helloandroid.ut3.minichallenge.objects.Obstacle;
+import helloandroid.ut3.minichallenge.objects.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
