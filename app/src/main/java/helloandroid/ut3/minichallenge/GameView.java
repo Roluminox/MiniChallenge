@@ -51,6 +51,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int[] nbStickmanVague = {5,10,20,40,60,100,200,400,800};
     private int nbvague = 0;
     private int nbstickmanSend;
+    private Bitmap background;
+    private int canvaWidth;
+    private int canvaHeigth;
+    private Bitmap scaledBackground;
 
     private Bitmap resizedImage;
 
@@ -71,6 +75,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         sensorManager.registerListener();
 
         activeTimer = createTimer(1500);
+
+        canvaHeigth = 0;
+        canvaWidth = 0;
+
+        // Image en arrière-plan
+        background = BitmapFactory.decodeResource(getResources(), R.drawable.background);
     }
 
     private Timer createTimer(int time){
@@ -84,6 +94,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         timer.scheduleAtFixedRate(timerTask, time,time);
         return timer;
+    }
+
+    public void updateBackground(){
+        scaledBackground = Bitmap.createScaledBitmap(background, canvaWidth, canvaHeigth, true);
     }
 
     private void sendStickman(){
@@ -137,21 +151,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         centerWidth = getRootView().getWidth() / 2;
 
         if (canvas != null) {
+            if (canvaWidth == 0 && canvaHeigth == 0){
+                canvaWidth = canvas.getWidth();
+                canvaHeigth = canvas.getHeight();
+
+                updateBackground();
+            }
+
             //Gestion de la couleur du canva en fonction de la luminosité
             if (isDark) {
                 canvas.drawColor(Color.BLACK);
             } else {
-                canvas.drawColor(Color.WHITE);
+                // Dessiner l'image d'arrière-plan sur tout le canvas
+                canvas.drawBitmap(scaledBackground, 0, 0, null);
             }
 
             // Score
             Paint colorText = new Paint();
-            colorText.setTextSize(100);
+            colorText.setTextSize(60);
             colorText.setColor(Color.GRAY);
             canvas.drawText(String.valueOf(score), 50, 100, colorText);
 
             // Vague
-            canvas.drawText("Vague : "+String.valueOf(nbvague+1), centerWidth, 100, colorText);
+            canvas.drawText("Vague : "+String.valueOf(nbvague+1), centerWidth+110, 100, colorText);
 
             // Zone de destruction
             Paint paintDestruction = new Paint();
