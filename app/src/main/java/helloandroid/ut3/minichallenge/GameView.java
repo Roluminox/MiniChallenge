@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -200,6 +201,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         stickmanList.add(newStickman);
+    }
+
+    public boolean onTouchEvent(MotionEvent event) {
+        float touchX = event.getX();
+        float touchY = event.getY();
+
+        Stickman stickmanTouched = null;
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                for (Stickman stickman : stickmanList) {
+                    if (stickman.isDestructible() && stickman.getStickman().contains(touchX, touchY)) {
+                        stickmanList.remove(stickman);
+                        break;
+                    }
+                }
+                invalidate();
+                break;
+        }
+        return true;
     }
 
 
