@@ -6,6 +6,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RadialGradient;
+import android.graphics.Shader;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -36,9 +38,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int movementY = 0;
     private List<Stickman> stickmanList;
     private int maxStickman;
-
-    private List<Obstacle> obstacles;
-
     private boolean isDark = false; // False si light on
 
     public GameView(Context context) {
@@ -48,7 +47,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         getHolder().addCallback(this);
 
         stickmanList = new ArrayList<>();
-        obstacles = new ArrayList<>();
 
         maxStickman = 10;
 
@@ -123,7 +121,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
 
             paintStickman(canvas);
-            paintObstacles(canvas);
 
             updateBoule();
         }
@@ -136,13 +133,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         // Initialiser les coordonnées du centre du cercle au centre de l'écran
         circleCenterX = screenWidth / 2;
         circleCenterY = screenHeight / 2;
-
-        Random random = new Random();
-
-        for (int i = 0; i < 10; ++i) {
-            obstacles.add(new Tree(random.nextInt(screenWidth), random.nextInt(screenHeight)));
-            obstacles.add(new Bush(random.nextInt(screenWidth), random.nextInt(screenHeight)));
-        }
     }
 
     @Override
