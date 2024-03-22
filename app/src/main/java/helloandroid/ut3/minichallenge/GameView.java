@@ -34,6 +34,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private List<Stickman> stickmanList;
     private int maxStickman;
 
+    private List<Obstacle> obstacles;
+
     private boolean isDark = false; // False si light on
 
     public GameView(Context context) {
@@ -43,6 +45,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         getHolder().addCallback(this);
 
         stickmanList = new ArrayList<>();
+        obstacles = new ArrayList<>();
+
         maxStickman = 10;
 
         SensorManagerClass sensorManager = new SensorManagerClass(context, this);
@@ -116,6 +120,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
 
             paintStickman(canvas);
+            paintObstacles(canvas);
 
             updateBoule();
         }
@@ -128,6 +133,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         // Initialiser les coordonnées du centre du cercle au centre de l'écran
         circleCenterX = screenWidth / 2;
         circleCenterY = screenHeight / 2;
+
+        Random random = new Random();
+
+        for (int i = 0; i < 10; ++i) {
+            obstacles.add(new Tree(random.nextInt(screenWidth), random.nextInt(screenHeight)));
+            obstacles.add(new Bush(random.nextInt(screenWidth), random.nextInt(screenHeight)));
+        }
     }
 
     @Override
@@ -223,5 +235,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         return true;
     }
 
-
+    public void paintObstacles(Canvas canvas) {
+        for (Obstacle obstacle : obstacles) {
+            canvas.drawRect(obstacle.getBounds(), obstacle.getColor());
+        }
+    }
 }
