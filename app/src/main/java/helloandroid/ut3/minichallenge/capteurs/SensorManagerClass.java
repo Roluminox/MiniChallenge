@@ -42,10 +42,8 @@ public class SensorManagerClass implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
             float lux = event.values[0];
-            // L'envoie dans photo
             callback.onLuxValueChange(lux);
         } else if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-            Log.e("eee",String.valueOf(event.values[0]));
             float acc = event.values[0];
             callback.onAccValueChange(acc);
         }
