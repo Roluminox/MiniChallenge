@@ -44,6 +44,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int nbvague = 0;
     private int nbstickmanSend;
 
+    private Bitmap resizedImage;
+
     public GameView(Context context) {
         super(context);
         this.context = context;
@@ -52,6 +54,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         getHolder().addCallback(this);
 
         stickmanList = new ArrayList<>();
+
+        // Charger l'image à partir des ressources
+        Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.graal);
+        this.resizedImage = Bitmap.createScaledBitmap(originalImage, 100, 100, false);
 
         SensorManagerClass sensorManager = new SensorManagerClass(context, this);
         sensorManager.registerListener();
@@ -145,17 +151,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             paintDestruction.setStrokeWidth(5); // Épaisseur
             canvas.drawCircle(centerWidth, centerHeigth, 300, paintDestruction);
 
-
-            // Charger l'image à partir des ressources
-            Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.graal);
-            Bitmap resizedImage = Bitmap.createScaledBitmap(originalImage, 100, 100, false);
-
-            // Définir le dégradé radial pour le halo
-            RadialGradient gradient = new RadialGradient(centerWidth, centerHeigth, Math.max(resizedImage.getWidth(), resizedImage.getHeight()) * 0.75f,
-                    new int[]{Color.YELLOW, Color.TRANSPARENT}, null, Shader.TileMode.CLAMP);
-
             // Appliquer le dégradé au halo
             Paint haloPaint = new Paint();
+            RadialGradient gradient = new RadialGradient(centerWidth, centerHeigth, Math.max(resizedImage.getWidth(), resizedImage.getHeight()) * 0.75f,
+                            new int[]{Color.YELLOW, Color.TRANSPARENT}, null, Shader.TileMode.CLAMP);
             haloPaint.setShader(gradient);
 
             // Dessiner le halo lumineux autour de l'image
