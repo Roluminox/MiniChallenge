@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import helloandroid.ut3.minichallenge.objects.Bush;
+import helloandroid.ut3.minichallenge.objects.Obstacle;
+import helloandroid.ut3.minichallenge.objects.Tree;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread thread;
     private int screenWidth;
@@ -25,6 +29,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int speedY = 5; // Vitesse de déplacement verticale
     private List<Stickman> stickmanList;
 
+    private List<Obstacle> obstacles;
+
     private boolean isDark = false; // False si light on
 
     public GameView(Context context) {
@@ -34,6 +40,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
 
         stickmanList = new ArrayList<>();
+        obstacles = new ArrayList<>();
     }
 
     public void update() {
@@ -83,6 +90,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
 
             paintStickman(canvas);
+
+            paintObstacles(canvas);
         }
     }
 
@@ -93,6 +102,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         // Initialiser les coordonnées du centre du cercle au centre de l'écran
         circleCenterX = screenWidth / 2;
         circleCenterY = screenHeight / 2;
+
+        Random random = new Random();
+
+        for (int i = 0; i < 10; ++i) {
+            obstacles.add(new Tree(random.nextInt(screenWidth), random.nextInt(screenHeight)));
+            obstacles.add(new Bush(random.nextInt(screenWidth), random.nextInt(screenHeight)));
+        }
     }
 
     @Override
@@ -151,6 +167,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         for(Stickman stickman : stickmanList) {
             canvas.drawRect(stickman.getStickman(), stickman.getPaint());
+        }
+    }
+
+    public void paintObstacles(Canvas canvas) {
+        for (Obstacle obstacle : obstacles) {
+            canvas.drawRect(obstacle.getBounds(), obstacle.getColor());
         }
     }
 }
