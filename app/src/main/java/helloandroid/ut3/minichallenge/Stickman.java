@@ -28,8 +28,7 @@ public class Stickman {
         this.paint.setColor(Color.RED);
     }
 
-    public void update(Context context, int centerX, int centerY, int centerWidth, int centerHeigth, int protectedZoneRadius, boolean isDark, GameThread thread ) {
-
+    public void update(Context context, int centerX, int centerY, int centerWidth, int centerHeigth, boolean isDark) {
         int div = isDark ? 1 : 3;
         x = x-centerX < 0 ? x+(deplacementX/div) : x-(deplacementX/div);
         y = y-centerY < 0 ? y+(deplacementY/div) : y-(deplacementY/div);
@@ -37,14 +36,6 @@ public class Stickman {
         // Vérifiez si le nouveau Stickman est dans la zone de destruction
         if (isInDestructionZone(this, centerWidth, centerHeigth)) {
             setDestructible();
-        }
-
-        // Vérifier si le Stickman est dans la zone à protéger
-        if (isInProtectedZone(centerX, centerY, protectedZoneRadius)){
-            // Envoyer sur la page de fin de jeu
-            thread.setRunning(false);
-            Intent intent = new Intent(context, EndActivity.class);
-            context.startActivity(intent);
         }
 
         stickman = new RectF(x, y, x+30, y+30);
@@ -114,7 +105,7 @@ public class Stickman {
     }
 
     // Méthode pour vérifier si un Stickman est dans la zone protégée
-    private boolean isInProtectedZone(int centerX, int centerY, int protectedZoneRadius) {
+    public boolean isInProtectedZone(int centerX, int centerY, int protectedZoneRadius) {
         double distanceToCenter = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
         return distanceToCenter <= protectedZoneRadius;
     }
