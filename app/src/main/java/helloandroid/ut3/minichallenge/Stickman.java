@@ -10,13 +10,15 @@ import java.util.Random;
 
 public class Stickman {
 
-    private int x;
-    private int y;
+    private float x;
+    private float y;
+    private float deplacementX;
+    private float deplacementY;
+
     private RectF stickman;
     private Paint paint;
     private int color;
     private boolean isDestructible;
-    private int protectedZoneRadius;
 
     public Stickman(int screenWidth, int screenHeight) {
         initStickman(screenWidth, screenHeight);
@@ -27,8 +29,8 @@ public class Stickman {
     }
 
     public void update(Context context, int centerX, int centerY, int centerWidth, int centerHeigth, int protectedZoneRadius, GameThread thread ) {
-        x = x-centerX < 0 ? x+3 : x-3;
-        y = y-centerY < 0 ? y+3 : y-3;
+        x = x-centerX < 0 ? x+deplacementX : x-deplacementX;
+        y = y-centerY < 0 ? y+deplacementY : y-deplacementY;
 
         // Vérifiez si le nouveau Stickman est dans la zone de destruction
         if (isInDestructionZone(this, centerWidth, centerHeigth)) {
@@ -72,6 +74,10 @@ public class Stickman {
                 this.x = random.nextInt(screenWidth);
                 this.y = screenHeight-50;
         }
+
+        this.deplacementY = (Math.max(screenHeight/2, Math.abs(y)) - Math.min(screenHeight/2, Math.abs(y))) / 100f;
+        this.deplacementX = (Math.max(screenWidth/2, Math.abs(x)) - Math.min(screenWidth/2, Math.abs(x))) / 100f;
+
         stickman = new RectF(this.x, this.y, this.x+50, this.y+50);
     }
 
@@ -83,11 +89,11 @@ public class Stickman {
         return this.paint;
     }
 
-    public int getX() {
+    public float getX() {
         return this.x;
     }
 
-    public int getY() {
+    public float getY() {
         return this.y;
     }
 
