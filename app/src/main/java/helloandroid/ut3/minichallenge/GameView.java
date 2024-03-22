@@ -146,12 +146,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
             // Score
             Paint colorText = new Paint();
-            colorText.setTextSize(100);
+            colorText.setTextSize(60);
             colorText.setColor(Color.GRAY);
             canvas.drawText(String.valueOf(score), 50, 100, colorText);
 
             // Vague
-            canvas.drawText("Vague : "+String.valueOf(nbvague+1), centerWidth, 100, colorText);
+            canvas.drawText("Vague : "+String.valueOf(nbvague+1), centerWidth+110, 100, colorText);
 
             // Zone de destruction
             Paint paintDestruction = new Paint();
