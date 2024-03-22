@@ -9,7 +9,7 @@ import android.hardware.SensorManager;
 public class SensorManagerClass implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor lightSensor;
-    private Sensor accSensor;
+    private Sensor accelerometreSensor;
     private SensorListenerCallback callback;
 
     public SensorManagerClass(Context context, SensorListenerCallback callback) {
@@ -19,14 +19,14 @@ public class SensorManagerClass implements SensorEventListener {
 
         // Récupère une référence au capteur de luminosité
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accelerometreSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
 
     public void registerListener() {
         // Enregistre l'écouteur de capteur
         if (lightSensor != null) {
             sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-            sensorManager.registerListener(this, accSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            sensorManager.registerListener(this, accelerometreSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
@@ -40,9 +40,14 @@ public class SensorManagerClass implements SensorEventListener {
         if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
             float lux = event.values[0];
             callback.onLuxValueChange(lux);
-        } else if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-            float acc = event.values[0];
-            callback.onAccValueChange(acc);
+        } else {
+            float[] gravity = event.values;
+
+            double roll = Math.atan2(gravity[1], gravity[2]) * (180 / Math.PI);
+            double pitch = Math.atan2(-gravity[0], Math.sqrt(gravity[1] * gravity[1] + gravity[2] * gravity[2])) * (180 / Math.PI);
+
+            double[] retour = {roll, pitch};
+            callback.onAccValueChange(retour);
         }
     }
 

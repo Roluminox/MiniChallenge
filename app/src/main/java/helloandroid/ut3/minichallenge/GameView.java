@@ -7,12 +7,14 @@ import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
+import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorListenerCallback {
     private GameThread thread;
     private int screenWidth;
     private int screenHeight;
@@ -21,32 +23,38 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int circleRadius = 30; // Rayon de la boule
     private int circleCenterX;
     private int circleCenterY;
-    private int speedX = 5; // Vitesse de déplacement horizontale
-    private int speedY = 5; // Vitesse de déplacement verticale
+    private int movementX = 0;
+    private int movementY = 0;
     private List<Stickman> stickmanList;
 
     private boolean isDark = false; // False si light on
 
     public GameView(Context context) {
         super(context);
-        thread = new GameThread(context, getHolder(), this);
+        thread = new GameThread(getHolder(), this);
         setFocusable(true);
         getHolder().addCallback(this);
-
+      
         stickmanList = new ArrayList<>();
+      
+        SensorManagerClass sensorManager = new SensorManagerClass(context, this);
+        sensorManager.registerListener();
     }
 
     public void update() {
-        // Mise à jour des coordonnées de la boule pour la déplacer
-        circleCenterX += speedX;
-        circleCenterY += speedY;
-
-        // Si la boule atteint les bords de l'écran, inverser la direction
-        if (circleCenterX + circleRadius >= screenWidth || circleCenterX - circleRadius <= 0) {
-            speedX *= -1;
+        // Mettre à jour les coordonnées du cercle pour le déplacer
+        if(
+                movementX > 0 && (circleCenterX + circleRadius) + movementX <= screenWidth ||
+                movementX < 0 && (circleCenterX - circleRadius) + movementX >= 0
+        ){
+            circleCenterX += movementX;
         }
-        if (circleCenterY + circleRadius >= screenHeight || circleCenterY - circleRadius <= 0) {
-            speedY *= -1;
+
+        if(
+                movementY > 0 && (circleCenterY + circleRadius) + movementY <= screenHeight ||
+                movementY < 0 && (circleCenterY - circleRadius) + movementY >= 0
+        ) {
+            circleCenterY += movementY;
         }
     }
 
@@ -115,8 +123,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void setIsDark(boolean isDark) {
-        this.isDark = isDark;
+    @Override
+    public void onLuxValueChange(float luxValue) {
+        this.isDark = (luxValue > 10);
+    }
+
+    @Override
+    public void onAccValueChange(double[] accValue) {
+        this.movementX = (int) accValue[1];
+        this.movementY = (int) accValue[0];
     }
 
     public void paintStickman(Canvas canvas) {
