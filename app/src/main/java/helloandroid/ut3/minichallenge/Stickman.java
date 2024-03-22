@@ -45,7 +45,7 @@ public class Stickman {
             context.startActivity(intent);
         }
 
-        stickman = new RectF(x, y, x+50, y+50);
+        stickman = new RectF(x, y, x+30, y+30);
     }
 
     private void initStickman(int screenWidth, int screenHeight) {
@@ -75,8 +75,8 @@ public class Stickman {
                 this.y = screenHeight-50;
         }
 
-        this.deplacementY = (Math.max(screenHeight/2, Math.abs(y)) - Math.min(screenHeight/2, Math.abs(y))) / 100f;
-        this.deplacementX = (Math.max(screenWidth/2, Math.abs(x)) - Math.min(screenWidth/2, Math.abs(x))) / 100f;
+        this.deplacementY = (Math.max(screenHeight/2, Math.abs(y)) - Math.min(screenHeight/2, Math.abs(y))) / 150f;
+        this.deplacementX = (Math.max(screenWidth/2, Math.abs(x)) - Math.min(screenWidth/2, Math.abs(x))) / 150f;
 
         stickman = new RectF(this.x, this.y, this.x+50, this.y+50);
     }
