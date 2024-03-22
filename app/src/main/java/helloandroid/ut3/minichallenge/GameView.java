@@ -68,7 +68,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         Bitmap originalImageGraal = BitmapFactory.decodeResource(getResources(), R.drawable.graal);
         this.resizedImageGraal = Bitmap.createScaledBitmap(originalImageGraal, 100, 100, false);
 
-        // Chargement de l'image ded la boule
+        // Chargement de l'image de la boule
         Bitmap originalImageBoule= BitmapFactory.decodeResource(getResources(), R.drawable.boule);
         this.resizedImageBoule = Bitmap.createScaledBitmap(originalImageBoule, 100, 100, false);
 
@@ -197,8 +197,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
             paintStickman(canvas);
 
-            updateBoule();
-
             if (isDark) {
                 Paint backgroundPainter = new Paint();
                 RadialGradient backgroundGradient = new RadialGradient(centerWidth, centerHeigth, 400,
@@ -210,6 +208,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 canvas.drawRect(0, 0, canvaWidth, canvaHeigth, backgroundPainter);
                 paintFlashlight(canvas);
             }
+
+            updateBoule();
         }
     }
 
