@@ -4,23 +4,36 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
-import java.util.Random;
-
 public class Stickman {
 
     private int x;
     private int y;
     private RectF stickman;
-    private Paint color;
+    private Paint paint;
+    private int color;
+    private boolean isDestructible;
 
     public Stickman(int x, int y) {
-        stickman = new RectF(x, y, x+50, y+50);
-        color = new Paint();
-        color.setColor(Color.RED);
+        this.x = x;
+        this.y = y;
+        this.color = Color.RED;
+        this.isDestructible = false;
+        this.stickman = new RectF(this.x, this.y, this.x+50, this.y+50);
+        this.paint = new Paint();
+        this.paint.setColor(Color.RED);
     }
 
-    public void update() {
+    public void update(int centerX, int centerY, int centerWidth, int centerHeigth) {
+        x = x-centerX < 0 ? x+1 : x-1;
+        y = y-centerY < 0 ? y+1 : y-1;
 
+        // Vérifiez si le nouveau Stickman est dans la zone de destruction
+        if (isInDestructionZone(this, centerWidth, centerHeigth)) {
+            this.setPaintColor(Color.GREEN);
+            setDestructible();
+        }
+
+        stickman = new RectF(x, y, x+50, y+50);
     }
 
     public RectF getStickman() {
@@ -28,7 +41,7 @@ public class Stickman {
     }
 
     public Paint getPaint() {
-        return this.color;
+        return this.paint;
     }
 
     public int getX() {
@@ -37,5 +50,23 @@ public class Stickman {
 
     public int getY() {
         return this.y;
+    }
+
+    public void setPaintColor(int color) {
+        this.color = color;
+        this.paint.setColor(color); // Mettre à jour la couleur du pinceau
+    }
+
+    public boolean isDestructible() {
+        return this.isDestructible;
+    }
+
+    public void setDestructible() {
+        this.isDestructible = true;
+    }
+
+    // Méthode pour vérifier si un Stickman est dans la zone de destruction
+    private boolean isInDestructionZone(Stickman stickman, int centerWidth, int centerHeigth) {
+        return Math.sqrt(Math.pow(stickman.getX() - centerWidth, 2) + Math.pow(stickman.getY() - centerHeigth, 2)) <= 400;
     }
 }
