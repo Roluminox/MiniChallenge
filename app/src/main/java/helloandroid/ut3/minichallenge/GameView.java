@@ -13,7 +13,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread thread;
     private int screenWidth;
     private int screenHeight;
-    private int circleRadius = 50; // Modifier le rayon du cercle si nécessaire
+    private int circleRadius = 30; // Modifier le rayon du cercle si nécessaire
     private int circleCenterX;
     private int circleCenterY;
     private int speedX = 5; // Vitesse de déplacement horizontale
@@ -46,8 +46,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
             Paint paint = new Paint();
-            paint.setColor(Color.RED);
+            paint.setColor(Color.BLACK);
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
+
+            // Zone à protéger
+            Paint paintZone = new Paint();
+            paintZone.setColor(Color.GREEN);
+            paintZone.setStyle(Paint.Style.STROKE); // Style du contour du cercle
+            paintZone.setStrokeWidth(5); // Épaisseur
+            canvas.drawCircle(getRootView().getWidth() / 2, getRootView().getHeight() / 2, 100, paintZone);
         }
     }
 
