@@ -11,7 +11,14 @@ import androidx.annotation.NonNull;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread thread;
-    private int x=0;
+    private int circleCenterX;
+    private int circleCenterY;
+    private int circleRadius = 50; // Modifier la taille du cercle si nécessaire
+    private int speedX = 5; // Vitesse de déplacement horizontale
+    private int speedY = 5; // Vitesse de déplacement verticale
+    
+    private int x= getRootView().getWidth() / 2;
+    private int y = getRootView().getHeight() / 2;
 
     public GameView(Context context) {
         super(context);
@@ -22,6 +29,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() {
         x = (x + 1) % 300;
+        y = (y + 1) % 300;
     }
     @Override
     public void draw(Canvas canvas) {
@@ -30,9 +38,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawColor(Color.WHITE);
             Paint paint = new Paint();
             paint.setColor(Color.rgb(250, 0, 0));
-            canvas.drawRect(x, 100, x+100, 200, paint);
+            canvas.drawRect(x, 100, y+100, 200, paint);
         }
     }
+
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
