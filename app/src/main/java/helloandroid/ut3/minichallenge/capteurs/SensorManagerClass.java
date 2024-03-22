@@ -9,7 +9,6 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 public class SensorManagerClass implements SensorEventListener {
-
     private SensorManager sensorManager;
     private Sensor lightSensor;
     private Sensor accelerometreSensor;

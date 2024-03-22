@@ -1,12 +1,7 @@
 package helloandroid.ut3.minichallenge;
 
-import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.SurfaceHolder;
-
-import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
-import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
 
 public class GameThread extends Thread {
 
@@ -18,7 +13,7 @@ public class GameThread extends Thread {
 
     private boolean running;
 
-    public GameThread(Context context, SurfaceHolder surfaceHolder, GameView gameView) {
+    public GameThread(SurfaceHolder surfaceHolder, GameView gameView) {
         super();
         this.surfaceHolder = surfaceHolder;
         this.gameView = gameView;

@@ -4,11 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
-import androidx.annotation.NonNull;
 
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
 import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
@@ -20,14 +17,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int circleRadius = 50; // Modifier le rayon du cercle si nécessaire
     private int circleCenterX;
     private int circleCenterY;
-    private int speedX = 5; // Vitesse de déplacement horizontale
-    private int speedY = 5; // Vitesse de déplacement verticale
     private int movementX = 0;
     private int movementY = 0;
 
+    private boolean isDark = false; // False si light on
+
     public GameView(Context context) {
         super(context);
-        thread = new GameThread(context, getHolder(), this);
+        thread = new GameThread(getHolder(), this);
         setFocusable(true);
         getHolder().addCallback(this);
         SensorManagerClass sensorManager = new SensorManagerClass(context, this);
@@ -55,7 +52,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
-            canvas.drawColor(Color.WHITE);
+            if (isDark)
+                canvas.drawColor(Color.WHITE);
+            else
+                canvas.drawColor(Color.BLACK);
             Paint paint = new Paint();
             paint.setColor(Color.RED);
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
@@ -93,7 +93,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     @Override
     public void onLuxValueChange(float luxValue) {
-        //Do nothing
+        this.isDark = (luxValue > 10);
     }
 
     @Override
