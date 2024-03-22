@@ -173,7 +173,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         for(Stickman stickman : stickmanList) {
             stickman.update(screenWidth/2, screenHeight/2, centerWidth, centerHeigth, circleRadius);
-            canvas.drawRect(stickman.getStickman(), stickman.getPaint());
+            if (isDark)
+                canvas.drawRect(stickman.getStickman(), stickman.getPaint());
+            else {
+                canvas.drawRect(stickman.getStickman(), new Paint(Color.BLACK));
+            }
         }
     }
 
@@ -195,11 +199,5 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 break;
         }
         return true;
-    }
-
-    public void paintObstacles(Canvas canvas) {
-        for (Obstacle obstacle : obstacles) {
-            canvas.drawRect(obstacle.getBounds(), obstacle.getColor());
-        }
     }
 }
