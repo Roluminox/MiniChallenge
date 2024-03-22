@@ -52,4 +52,6 @@ public class GameThread extends Thread {
     public void setRunning(boolean isRunning) {
         running = isRunning;
     }
+
+
 }

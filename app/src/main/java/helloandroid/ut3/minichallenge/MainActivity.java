@@ -16,6 +16,11 @@ public class MainActivity extends Activity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        // Verrouiller la luminosité de l'écran
+        WindowManager.LayoutParams layout = getWindow().getAttributes();
+        layout.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL;
+        getWindow().setAttributes(layout);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
