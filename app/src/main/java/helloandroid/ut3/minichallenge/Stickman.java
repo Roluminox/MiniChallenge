@@ -16,6 +16,12 @@ public class Stickman {
     private float deplacementY;
 
     private RectF stickman;
+
+    private RectF flashlight;
+    private int sizeFlashlight = 100;
+    private int startAngle = 0;
+    private int sweepAngle = 30;
+
     private Paint paint;
     private int color;
     private boolean isDestructible;
@@ -36,6 +42,20 @@ public class Stickman {
         // Vérifiez si le nouveau Stickman est dans la zone de destruction
         if (isInDestructionZone(this, centerWidth, centerHeigth)) {
             setDestructible();
+        }
+
+        // Update de la lampe si dans le noir
+        if (true) {
+            flashlight = new RectF(x - sizeFlashlight, y - sizeFlashlight, x + sizeFlashlight + 50, y + sizeFlashlight + 50);
+            // Calcul startAngle and sweepAngle
+            double deltaX = centerWidth - x;
+            double deltaY = centerHeigth - y;
+            double angleRadians = Math.atan2(deltaY, deltaX);
+            double angleDegrees = Math.toDegrees(angleRadians);
+            if (angleDegrees < 0) {
+                angleDegrees += 360;
+            }
+            startAngle = (int)angleDegrees - 15;
         }
 
         stickman = new RectF(x, y, x+30, y+30);
@@ -88,6 +108,18 @@ public class Stickman {
 
     public float getY() {
         return this.y;
+    }
+
+    public RectF getFlashlight() {
+        return flashlight;
+    }
+
+    public int getStartAngle() {
+        return startAngle;
+    }
+
+    public int getSweepAngle() {
+        return sweepAngle;
     }
 
 
