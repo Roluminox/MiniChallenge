@@ -1,5 +1,6 @@
 package helloandroid.ut3.minichallenge;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,9 +26,9 @@ public class Stickman {
         this.paint.setColor(Color.RED);
     }
 
-    public void update(int centerX, int centerY, int centerWidth, int centerHeigth, int protectedZoneRadius) {
-        x = x-centerX < 0 ? x+1 : x-1;
-        y = y-centerY < 0 ? y+1 : y-1;
+    public void update(Context context, int centerX, int centerY, int centerWidth, int centerHeigth, int protectedZoneRadius, GameThread thread ) {
+        x = x-centerX < 0 ? x+3 : x-3;
+        y = y-centerY < 0 ? y+3 : y-3;
 
         // Vérifiez si le nouveau Stickman est dans la zone de destruction
         if (isInDestructionZone(this, centerWidth, centerHeigth)) {
@@ -37,6 +38,9 @@ public class Stickman {
         // Vérifier si le Stickman est dans la zone à protéger
         if (isInProtectedZone(centerX, centerY, protectedZoneRadius)){
             // Envoyer sur la page de fin de jeu
+            thread.setRunning(false);
+            Intent intent = new Intent(context, EndActivity.class);
+            context.startActivity(intent);
         }
 
         stickman = new RectF(x, y, x+50, y+50);

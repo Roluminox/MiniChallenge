@@ -14,7 +14,7 @@ public class EndActivity extends Activity {
 
         mAccueilButton = findViewById(R.id.accueil_button);
         mAccueilButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EndActivity.this, MainActivity.class);
+            Intent intent = new Intent(EndActivity.this, StartActivity.class);
             startActivity(intent);
         });
     }

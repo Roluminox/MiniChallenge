@@ -15,6 +15,7 @@ public class StartActivity extends Activity {
 
         mStartButton = findViewById(R.id.start_button);
         mStartButton.setOnClickListener(v -> {
+            finish();
             Intent intent = new Intent(StartActivity.this, MainActivity.class);
             startActivity(intent);
         });
