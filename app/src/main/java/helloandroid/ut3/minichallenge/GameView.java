@@ -7,22 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
 import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
@@ -58,8 +53,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int canvaWidth;
     private int canvaHeigth;
     private Bitmap scaledBackground;
-
-    private Bitmap resizedImage;
+    private Bitmap resizedImageGraal;
+    private Bitmap resizedImageBoule;
 
     public GameView(Context context) {
         super(context);
@@ -68,9 +63,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         setFocusable(true);
         getHolder().addCallback(this);
 
-        // Charger l'image à partir des ressources
-        Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.graal);
-        this.resizedImage = Bitmap.createScaledBitmap(originalImage, 100, 100, false);
+        // Chargement de l'image du graal à partir des ressources
+        Bitmap originalImageGraal = BitmapFactory.decodeResource(getResources(), R.drawable.graal);
+        this.resizedImageGraal = Bitmap.createScaledBitmap(originalImageGraal, 100, 100, false);
+
+        // Chargement de l'image ded la boule
+        Bitmap originalImageBoule= BitmapFactory.decodeResource(getResources(), R.drawable.boule);
+        this.resizedImageBoule = Bitmap.createScaledBitmap(originalImageBoule, 100, 100, false);
 
         SensorManagerClass sensorManager = new SensorManagerClass(context, this);
         sensorManager.registerListener();
@@ -189,20 +188,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
             // Appliquer le dégradé au halo
             Paint haloPaint = new Paint();
-            RadialGradient gradient = new RadialGradient(centerWidth, centerHeigth, Math.max(resizedImage.getWidth(), resizedImage.getHeight()) * 0.75f,
+            RadialGradient gradient = new RadialGradient(centerWidth, centerHeigth, Math.max(resizedImageGraal.getWidth(), resizedImageGraal.getHeight()) * 0.75f,
                             new int[]{Color.YELLOW, Color.TRANSPARENT}, null, Shader.TileMode.CLAMP);
             haloPaint.setShader(gradient);
 
             // Dessiner le halo lumineux autour de l'image
-            canvas.drawCircle(centerWidth, centerHeigth, Math.max(resizedImage.getWidth(), resizedImage.getHeight()) * 0.75f, haloPaint);
+            canvas.drawCircle(centerWidth, centerHeigth, Math.max(resizedImageGraal.getWidth(), resizedImageGraal.getHeight()) * 0.75f, haloPaint);
 
             // Affichage de l'image du Graal
-            canvas.drawBitmap(resizedImage, centerWidth - resizedImage.getWidth() / 2, centerHeigth - resizedImage.getHeight() / 2, null);
+            canvas.drawBitmap(resizedImageGraal, centerWidth - resizedImageGraal.getWidth() / 2, centerHeigth - resizedImageGraal.getHeight() / 2, null);
 
             // Boule qui bouge
-            Paint paint = new Paint();
-            paint.setColor(Color.BLACK);
-            canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
+            canvas.drawBitmap(resizedImageBoule, circleCenterX - resizedImageBoule.getWidth() / 2, circleCenterY - resizedImageBoule.getHeight() / 2, null);
 
             paintStickman(canvas);
 
