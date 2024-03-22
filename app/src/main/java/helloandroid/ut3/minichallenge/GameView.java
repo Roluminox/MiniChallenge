@@ -16,20 +16,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int circleRadius = 50; // Modifier la taille du cercle si nécessaire
     private int speedX = 5; // Vitesse de déplacement horizontale
     private int speedY = 5; // Vitesse de déplacement verticale
-    
-    private int x= getRootView().getWidth() / 2;
-    private int y = getRootView().getHeight() / 2;
 
     public GameView(Context context) {
         super(context);
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
         getHolder().addCallback(this);
+
+        circleCenterX = getRootView().getWidth() / 2;
+        circleCenterY = getRootView().getHeight() / 2;
     }
 
     public void update() {
-        x = (x + 1) % 300;
-        y = (y + 1) % 300;
+        circleCenterX = (circleCenterX + 1) % 300;
+        circleCenterY = (circleCenterY + 1) % 300;
     }
     @Override
     public void draw(Canvas canvas) {
@@ -38,7 +38,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawColor(Color.WHITE);
             Paint paint = new Paint();
             paint.setColor(Color.rgb(250, 0, 0));
-            canvas.drawRect(x, 100, y+100, 200, paint);
+            canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
         }
     }
 
