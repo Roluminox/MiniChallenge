@@ -11,11 +11,13 @@ public class Stickman {
     private RectF stickman;
     private Paint paint;
     private int color;
+    private boolean isDestructible;
 
     public Stickman(int x, int y) {
         this.x = x;
         this.y = y;
         this.color = Color.RED;
+        this.isDestructible = false;
         this.stickman = new RectF(this.x, this.y, this.x+50, this.y+50);
         this.paint = new Paint();
         this.paint.setColor(Color.RED);
@@ -28,6 +30,7 @@ public class Stickman {
         // Vérifiez si le nouveau Stickman est dans la zone de destruction
         if (isInDestructionZone(this, centerWidth, centerHeigth)) {
             this.setPaintColor(Color.GREEN);
+            setDestructible();
         }
 
         stickman = new RectF(x, y, x+50, y+50);
@@ -52,6 +55,14 @@ public class Stickman {
     public void setPaintColor(int color) {
         this.color = color;
         this.paint.setColor(color); // Mettre à jour la couleur du pinceau
+    }
+
+    public boolean isDestructible() {
+        return this.isDestructible;
+    }
+
+    public void setDestructible() {
+        this.isDestructible = true;
     }
 
     // Méthode pour vérifier si un Stickman est dans la zone de destruction
