@@ -51,7 +51,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private Context context;
     private List<Drawable> characters = new ArrayList<>();
     private Random random = new Random();
-    private int[] nbStickmanVague = {5,10,20,40,60,100,200,400,800};
+    private int[] nbStickmanVague = {10,20,40,80,150,250,400,600,800,1600,3200,6400,12800};
     private int nbvague = 0;
     private int nbstickmanSend;
     private Bitmap background;
@@ -75,7 +75,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         SensorManagerClass sensorManager = new SensorManagerClass(context, this);
         sensorManager.registerListener();
 
-        activeTimer = createTimer(1500);
+        activeTimer = createTimer(1000);
 
         characters.add(ContextCompat.getDrawable(context, R.drawable.archer_stickman));
         characters.add(ContextCompat.getDrawable(context, R.drawable.chevalier_stickman));
@@ -113,9 +113,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             nbvague++;
             nbstickmanSend = 0;
 
-            int time = 1500 - (200*nbvague);
+            int time = 1000 - (150*nbvague);
             if(time <= 0){
-                time = 100;
+                time = 50;
             }
             //New time for timer
             activeTimer.cancel();
