@@ -65,7 +65,7 @@ public class GameThread extends Thread implements SensorListenerCallback {
 
     @Override
     public void onLuxValueChange(float luxValue) {
-        Log.i("eee","Lumière "+String.valueOf(luxValue));
+        gameView.setIsDark(luxValue > 100);
     }
 
     @Override

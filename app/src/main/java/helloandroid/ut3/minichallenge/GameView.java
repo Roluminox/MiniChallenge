@@ -19,6 +19,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int speedX = 5; // Vitesse de déplacement horizontale
     private int speedY = 5; // Vitesse de déplacement verticale
 
+    private boolean isDark = false; // False si light on
+
     public GameView(Context context) {
         super(context);
         thread = new GameThread(context, getHolder(), this);
@@ -44,7 +46,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
-            canvas.drawColor(Color.WHITE);
+            if (isDark)
+                canvas.drawColor(Color.WHITE);
+            else
+                canvas.drawColor(Color.BLACK);
             Paint paint = new Paint();
             paint.setColor(Color.RED);
             canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
@@ -78,5 +83,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
             retry = false;
         }
+    }
+
+    public void setIsDark(boolean isDark) {
+        this.isDark = isDark;
     }
 }
