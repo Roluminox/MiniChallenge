@@ -1,5 +1,7 @@
 package helloandroid.ut3.minichallenge;
 
+import static helloandroid.ut3.minichallenge.utils.FormesUtils.stickmanTouchCircle;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -37,13 +39,14 @@ public class Stickman {
         this.character = character;
     }
 
-    public void update(Context context, int centerX, int centerY, int centerWidth, int centerHeigth, boolean isDark) {
+    public void update(int centerX, int centerY, int centerWidth, int centerHeigth, int graalradius, boolean isDark) {
         int div = isDark ? 3 : 1;
         x = x-centerX < 0 ? x+(deplacementX/div) : x-(deplacementX/div);
         y = y-centerY < 0 ? y+(deplacementY/div) : y-(deplacementY/div);
 
         // Vérifiez si le nouveau Stickman est dans la zone de destruction
-        if (isInDestructionZone(this, centerWidth, centerHeigth)) {
+        int distanceMin = Double.valueOf(graalradius*1.5).intValue();
+        if (stickmanTouchCircle(this, centerWidth, centerHeigth, distanceMin)) {
             setDestructible();
         }
 
@@ -124,11 +127,6 @@ public class Stickman {
 
     public Bitmap getCharacter() {
         return ((BitmapDrawable) character).getBitmap();
-    }
-
-    // Méthode pour vérifier si un Stickman est dans la zone de destruction
-    private boolean isInDestructionZone(Stickman stickman, int centerWidth, int centerHeigth) {
-        return Math.sqrt(Math.pow(stickman.getX() - centerWidth, 2) + Math.pow(stickman.getY() - centerHeigth, 2)) <= 400;
     }
 
     // Méthode pour vérifier si un Stickman est dans la zone protégée
