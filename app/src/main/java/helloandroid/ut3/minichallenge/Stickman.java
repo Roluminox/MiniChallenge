@@ -32,8 +32,6 @@ public class Stickman {
         x = x-centerX < 0 ? x+deplacementX : x-deplacementX;
         y = y-centerY < 0 ? y+deplacementY : y-deplacementY;
 
-        int div = isDark ? 1 : 3;
-
         // Vérifiez si le nouveau Stickman est dans la zone de destruction
         if (isInDestructionZone(this, centerWidth, centerHeigth)) {
             setDestructible();
@@ -69,8 +67,8 @@ public class Stickman {
                 this.y = screenHeight-50;
         }
 
-        this.deplacementY = (Math.max(screenHeight/2, Math.abs(y)) - Math.min(screenHeight/2, Math.abs(y))) / 100f;
-        this.deplacementX = (Math.max(screenWidth/2, Math.abs(x)) - Math.min(screenWidth/2, Math.abs(x))) / 100f;
+        this.deplacementY = (Math.max(screenHeight/2, Math.abs(y)) - Math.min(screenHeight/2, Math.abs(y))) / 150f;
+        this.deplacementX = (Math.max(screenWidth/2, Math.abs(x)) - Math.min(screenWidth/2, Math.abs(x))) / 150f;
 
         stickman = new RectF(this.x, this.y, this.x+50, this.y+50);
     }

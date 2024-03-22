@@ -42,7 +42,7 @@ public class GameThread extends Thread {
                 }
             }
             try {
-                sleep(100);
+                sleep(50);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

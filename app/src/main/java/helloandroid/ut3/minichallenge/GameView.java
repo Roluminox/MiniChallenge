@@ -7,21 +7,15 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RadialGradient;
-import android.graphics.Shader;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
 import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
-import helloandroid.ut3.minichallenge.objects.Bush;
-import helloandroid.ut3.minichallenge.objects.Obstacle;
-import helloandroid.ut3.minichallenge.objects.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,7 +26,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int screenHeight;
     private int centerWidth;
     private int centerHeigth;
-    private int circleRadius = 30; // Rayon de la boule
+    private int circleRadius = 50; // Rayon de la boule
     private int circleCenterX;
     private int circleCenterY;
     private int movementX = 0;
@@ -117,14 +111,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             // Zone de destruction
             Paint paintDestruction = new Paint();
             paintDestruction.setColor(Color.YELLOW);
-            canvas.drawCircle(centerWidth, centerHeigth, 400, paintDestruction);
+            canvas.drawCircle(centerWidth, centerHeigth, 300, paintDestruction);
 
             // Zone à protéger
             Paint paintZone = new Paint();
             paintZone.setColor(Color.GREEN);
             paintZone.setStyle(Paint.Style.STROKE); // Style du contour du cercle
             paintZone.setStrokeWidth(5); // Épaisseur
-            canvas.drawCircle(centerWidth, centerHeigth, 100, paintZone);
+            canvas.drawCircle(centerWidth, centerHeigth, 70, paintZone);
 
             // Boule qui bouge
             Paint paint = new Paint();
@@ -173,8 +167,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     @Override
     public void onAccValueChange(double[] accValue) {
-        this.movementX = (int) accValue[1];
-        this.movementY = (int) accValue[0];
+        this.movementX = (int) accValue[1] * 2;
+        this.movementY = (int) accValue[0] * 2;
     }
 
     public void paintStickman(Canvas canvas) {
