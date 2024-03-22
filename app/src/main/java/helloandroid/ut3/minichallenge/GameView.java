@@ -46,10 +46,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
 
-            // Zone à détruire
-            Paint paintDesctruction = new Paint();
-            paintDesctruction.setColor(Color.YELLOW);
-            canvas.drawCircle(getRootView().getWidth() / 2, getRootView().getHeight() / 2, 350, paintDesctruction);
+            // Zone de destruction
+            Paint paintDestruction = new Paint();
+            paintDestruction.setColor(Color.YELLOW);
+            canvas.drawCircle(getRootView().getWidth() / 2, getRootView().getHeight() / 2, 350, paintDestruction);
 
             // Zone à protéger
             Paint paintZone = new Paint();
