@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class EndActivity extends Activity {
-    private Button mAccueilButton;
     private TextView scoreText;
 
     @Override
@@ -15,10 +14,18 @@ public class EndActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end);
 
-        mAccueilButton = findViewById(R.id.accueil_button);
+        Button mRestartButton = findViewById(R.id.restart_buttton);
+        mRestartButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EndActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        Button mAccueilButton = findViewById(R.id.accueil_button);
         mAccueilButton.setOnClickListener(v -> {
             Intent intent = new Intent(EndActivity.this, StartActivity.class);
             startActivity(intent);
+            finish();
         });
 
         scoreText = findViewById(R.id.score_text);

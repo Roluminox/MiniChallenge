@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
@@ -28,6 +29,7 @@ import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,14 +45,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int circleCenterY;
     private int movementX = 0;
     private int movementY = 0;
-    private List<Stickman> stickmanList;
+    private List<Stickman> stickmanList = new ArrayList<>();
     private boolean isDark = false; // False si light on
     private int score = 0;
     private Context context;
-
+    private List<Drawable> characters = new ArrayList<>();
+    private Random random = new Random();
     private int[] nbStickmanVague = {10,20,40,80,150,250,400,600,800,1600,3200,6400,12800};
     private int nbvague = 0;
     private int nbstickmanSend;
+    private Bitmap background;
+    private int canvaWidth;
+    private int canvaHeigth;
+    private Bitmap scaledBackground;
 
     private Bitmap resizedImage;
 
@@ -61,8 +68,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         setFocusable(true);
         getHolder().addCallback(this);
 
-        stickmanList = new ArrayList<>();
-
         // Charger l'image à partir des ressources
         Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.graal);
         this.resizedImage = Bitmap.createScaledBitmap(originalImage, 100, 100, false);
@@ -71,6 +76,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         sensorManager.registerListener();
 
         activeTimer = createTimer(1000);
+
+        characters.add(ContextCompat.getDrawable(context, R.drawable.archer_stickman));
+        characters.add(ContextCompat.getDrawable(context, R.drawable.chevalier_stickman));
+        characters.add(ContextCompat.getDrawable(context, R.drawable.mage_stickman));
+
+        canvaHeigth = 0;
+        canvaWidth = 0;
+
+        // Image en arrière-plan
+        background = BitmapFactory.decodeResource(getResources(), R.drawable.background);
     }
 
     private Timer createTimer(int time){
@@ -86,9 +101,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         return timer;
     }
 
+    public void updateBackground(){
+        scaledBackground = Bitmap.createScaledBitmap(background, canvaWidth, canvaHeigth, true);
+    }
+
     private void sendStickman(){
         if(nbstickmanSend != nbStickmanVague[nbvague]) {
-            stickmanList.add(new Stickman(screenWidth, screenHeight, getResources()));
+            stickmanList.add(new Stickman(screenWidth, screenHeight, characters.get(random.nextInt(characters.size()))));
             nbstickmanSend++;
         } else if(stickmanList.size() == 0) {
             nbvague++;
@@ -137,28 +156,36 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         centerWidth = getRootView().getWidth() / 2;
 
         if (canvas != null) {
+            if (canvaWidth == 0 && canvaHeigth == 0){
+                canvaWidth = canvas.getWidth();
+                canvaHeigth = canvas.getHeight();
+
+                updateBackground();
+            }
+
             //Gestion de la couleur du canva en fonction de la luminosité
             if (isDark) {
                 canvas.drawColor(Color.BLACK);
             } else {
-                canvas.drawColor(Color.WHITE);
+                // Dessiner l'image d'arrière-plan sur tout le canvas
+                canvas.drawBitmap(scaledBackground, 0, 0, null);
             }
 
             // Score
             Paint colorText = new Paint();
-            colorText.setTextSize(100);
-            colorText.setColor(Color.GRAY);
+            colorText.setTextSize(60);
+            colorText.setColor(Color.BLACK);
             canvas.drawText(String.valueOf(score), 50, 100, colorText);
 
             // Vague
-            canvas.drawText("Vague : "+String.valueOf(nbvague+1), centerWidth, 100, colorText);
+            canvas.drawText("Vague : "+String.valueOf(nbvague+1), centerWidth+110, 100, colorText);
 
             // Zone de destruction
             Paint paintDestruction = new Paint();
             paintDestruction.setColor(Color.YELLOW);
             paintDestruction.setStyle(Paint.Style.STROKE); // Style du contour du cercle
             paintDestruction.setStrokeWidth(5); // Épaisseur
-            canvas.drawCircle(centerWidth, centerHeigth, 300, paintDestruction);
+            canvas.drawCircle(centerWidth, centerHeigth, 250, paintDestruction);
 
             // Appliquer le dégradé au halo
             Paint haloPaint = new Paint();
