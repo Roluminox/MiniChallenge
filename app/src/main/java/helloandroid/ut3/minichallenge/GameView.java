@@ -13,9 +13,12 @@ import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback, SensorListenerCallback {
     private GameThread thread;
+    private Timer timer;
     private int screenWidth;
     private int screenHeight;
     private int centerWidth;
@@ -26,6 +29,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int movementX = 0;
     private int movementY = 0;
     private List<Stickman> stickmanList;
+    private int maxStickman;
 
     private boolean isDark = false; // False si light on
 
@@ -34,11 +38,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
         getHolder().addCallback(this);
-      
+
         stickmanList = new ArrayList<>();
-      
+        maxStickman = 10;
+
         SensorManagerClass sensorManager = new SensorManagerClass(context, this);
         sensorManager.registerListener();
+
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                addStickman();
+            }
+        };
+
+        // Déclenchement après 2 secondes (2000 millisecondes)
+        timer.scheduleAtFixedRate(task, 2000,2000);
     }
 
     public void update() {
@@ -135,6 +151,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void paintStickman(Canvas canvas) {
+        if(stickmanList.size() < maxStickman) {
+            addStickman();
+        }
+
+        for(Stickman stickman : stickmanList) {
+            stickman.update(screenWidth/2, screenHeight/2, centerWidth, centerHeigth);
+            canvas.drawRect(stickman.getStickman(), stickman.getPaint());
+        }
+    }
+
+    public void addStickman() {
         Random random = new Random();
         // Générer un nombre aléatoire entre 0 et 3
         int randomCoin = random.nextInt(4);
@@ -163,11 +190,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         stickmanList.add(newStickman);
-
-        for(Stickman stickman : stickmanList) {
-            stickman.update(screenWidth/2, screenHeight/2, centerWidth, centerHeigth);
-            canvas.drawRect(stickman.getStickman(), stickman.getPaint());
-        }
     }
 
 
