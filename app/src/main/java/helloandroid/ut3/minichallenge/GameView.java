@@ -45,9 +45,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
-            Paint paint = new Paint();
-            paint.setColor(Color.BLACK);
-            canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
+
+            // Zone à détruire
+            Paint paintDesctruction = new Paint();
+            paintDesctruction.setColor(Color.YELLOW);
+            canvas.drawCircle(getRootView().getWidth() / 2, getRootView().getHeight() / 2, 350, paintDesctruction);
 
             // Zone à protéger
             Paint paintZone = new Paint();
@@ -55,6 +57,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             paintZone.setStyle(Paint.Style.STROKE); // Style du contour du cercle
             paintZone.setStrokeWidth(5); // Épaisseur
             canvas.drawCircle(getRootView().getWidth() / 2, getRootView().getHeight() / 2, 100, paintZone);
+
+            // Boule qui bouge
+            Paint paint = new Paint();
+            paint.setColor(Color.BLACK);
+            canvas.drawCircle(circleCenterX, circleCenterY, circleRadius, paint);
+
         }
     }
 
