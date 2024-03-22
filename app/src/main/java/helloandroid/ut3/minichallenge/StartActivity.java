@@ -7,12 +7,12 @@ import android.view.View;
 import android.widget.Button;
 
 public class StartActivity extends Activity {
-
     Button mStartButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_start);
 
         mStartButton = findViewById(R.id.start_button);
         mStartButton.setOnClickListener(new View.OnClickListener() {
