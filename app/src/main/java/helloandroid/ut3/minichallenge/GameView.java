@@ -1,19 +1,27 @@
 package helloandroid.ut3.minichallenge;
 
 import static helloandroid.ut3.minichallenge.utils.FormesUtils.stickmanTouchCircle;
+import static helloandroid.ut3.minichallenge.utils.FormesUtils.touchStickman;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import androidx.core.content.res.ResourcesCompat;
 
 import helloandroid.ut3.minichallenge.capteurs.SensorListenerCallback;
 import helloandroid.ut3.minichallenge.capteurs.SensorManagerClass;
@@ -80,7 +88,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     private void sendStickman(){
         if(nbstickmanSend != nbStickmanVague[nbvague]) {
-            stickmanList.add(new Stickman(screenWidth, screenHeight));
+            stickmanList.add(new Stickman(screenWidth, screenHeight, getResources()));
             nbstickmanSend++;
         } else if(stickmanList.size() == 0) {
             nbvague++;
@@ -130,10 +138,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         if (canvas != null) {
             //Gestion de la couleur du canva en fonction de la luminosité
-            if (isDark)
-                canvas.drawColor(Color.WHITE);
-            else
+            if (isDark) {
                 canvas.drawColor(Color.BLACK);
+            } else {
+                canvas.drawColor(Color.WHITE);
+            }
 
             // Score
             Paint colorText = new Paint();
@@ -205,7 +214,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     @Override
     public void onLuxValueChange(float luxValue) {
-        this.isDark = (luxValue > 10);
+        this.isDark = (luxValue < 10);
     }
 
     @Override
@@ -215,8 +224,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void paintStickman(Canvas canvas) {
-        Paint paintBlack = new Paint();
-        paintBlack.setColor(Color.BLACK);
 
         for(Stickman stickman : stickmanList) {
             stickman.update(this.context, screenWidth/2, screenHeight/2, centerWidth, centerHeigth, isDark);
@@ -226,19 +233,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 intent.putExtra("score", String.valueOf(score));
                 context.startActivity(intent);
             }
-            if (isDark)
-                canvas.drawRect(stickman.getStickman(), stickman.getPaint());
-            else {
-                canvas.drawRect(stickman.getStickman(), paintBlack);
+
+            if (isDark) {
+                int[] colors = {Color.YELLOW, Color.TRANSPARENT};
+                float[] positions = {0.0f, 1.0f};
+                RadialGradient radialGradient = new RadialGradient(stickman.getX(), stickman.getY(), 100, colors, positions, Shader.TileMode.CLAMP);
+                Paint paintWhite = new Paint();
+                paintWhite.setShader(radialGradient);
+                canvas.drawArc(stickman.getFlashlight(), stickman.getStartAngle(), stickman.getSweepAngle(), true, paintWhite);
+            } else {
+                canvas.drawBitmap(stickman.getCharacter(), stickman.getX(), stickman.getY(), null);
             }
-
-            int[] colors = {Color.YELLOW, Color.TRANSPARENT};
-            float[] positions = {0.0f, 1.0f};
-            RadialGradient radialGradient = new RadialGradient(stickman.getX(), stickman.getY(), 100, colors, positions, Shader.TileMode.CLAMP);
-            Paint paintWhite = new Paint();
-            paintWhite.setShader(radialGradient);
-
-            canvas.drawArc(stickman.getFlashlight(), stickman.getStartAngle(), stickman.getSweepAngle(), true, paintWhite);
         }
     }
 
@@ -249,7 +254,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 for (Stickman stickman : stickmanList) {
-                    if (stickman.isDestructible() && stickman.getStickman().contains(touchX, touchY)) {
+                    if (stickman.isDestructible() && touchStickman(stickman, touchX, touchY)) {
                         score++;
                         stickmanList.remove(stickman);
                         break;

@@ -2,10 +2,18 @@ package helloandroid.ut3.minichallenge;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
+import androidx.core.content.res.ResourcesCompat;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Stickman {
@@ -25,17 +33,18 @@ public class Stickman {
     private Paint paint;
     private int color;
     private boolean isDestructible;
+    private Drawable character ;
 
-    public Stickman(int screenWidth, int screenHeight) {
+
+    public Stickman(int screenWidth, int screenHeight, Resources res) {
         initStickman(screenWidth, screenHeight);
-        this.color = Color.RED;
         this.isDestructible = false;
-        this.paint = new Paint();
-        this.paint.setColor(Color.RED);
+
+        character = ResourcesCompat.getDrawable(res, R.drawable.archer_stickman, null);
     }
 
     public void update(Context context, int centerX, int centerY, int centerWidth, int centerHeigth, boolean isDark) {
-        int div = isDark ? 1 : 3;
+        int div = isDark ? 3 : 1;
         x = x-centerX < 0 ? x+(deplacementX/div) : x-(deplacementX/div);
         y = y-centerY < 0 ? y+(deplacementY/div) : y-(deplacementY/div);
 
@@ -57,8 +66,6 @@ public class Stickman {
             }
             startAngle = (int)angleDegrees - 15;
         }
-
-        stickman = new RectF(x, y, x+30, y+30);
     }
 
     private void initStickman(int screenWidth, int screenHeight) {
@@ -90,16 +97,6 @@ public class Stickman {
 
         this.deplacementY = (Math.max(screenHeight/2, Math.abs(y)) - Math.min(screenHeight/2, Math.abs(y))) / 150f;
         this.deplacementX = (Math.max(screenWidth/2, Math.abs(x)) - Math.min(screenWidth/2, Math.abs(x))) / 150f;
-
-        stickman = new RectF(this.x, this.y, this.x+50, this.y+50);
-    }
-
-    public RectF getStickman() {
-        return this.stickman;
-    }
-
-    public Paint getPaint() {
-        return this.paint;
     }
 
     public float getX() {
@@ -129,6 +126,10 @@ public class Stickman {
 
     public void setDestructible() {
         this.isDestructible = true;
+    }
+
+    public Bitmap getCharacter() {
+        return ((BitmapDrawable) character).getBitmap();
     }
 
     // Méthode pour vérifier si un Stickman est dans la zone de destruction
