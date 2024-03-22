@@ -169,7 +169,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             // Score
             Paint colorText = new Paint();
             colorText.setTextSize(60);
-            colorText.setColor(Color.GRAY);
+            colorText.setColor(Color.BLACK);
             canvas.drawText(String.valueOf(score), 50, 100, colorText);
 
             // Vague
@@ -180,7 +180,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             paintDestruction.setColor(Color.YELLOW);
             paintDestruction.setStyle(Paint.Style.STROKE); // Style du contour du cercle
             paintDestruction.setStrokeWidth(5); // Épaisseur
-            canvas.drawCircle(centerWidth, centerHeigth, 300, paintDestruction);
+            canvas.drawCircle(centerWidth, centerHeigth, 250, paintDestruction);
 
             // Appliquer le dégradé au halo
             Paint haloPaint = new Paint();
