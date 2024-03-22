@@ -1,5 +1,7 @@
 package helloandroid.ut3.minichallenge;
 
+import static helloandroid.ut3.minichallenge.utils.FormesUtils.stickmanTouchCircle;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -55,6 +57,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
                 movementY < 0 && (circleCenterY - circleRadius) + movementY >= 0
         ) {
             circleCenterY += movementY;
+        }
+
+        for(Stickman st : stickmanList){
+            if(stickmanTouchCircle(st, circleCenterX, circleCenterY, circleRadius)){
+             stickmanList.remove(st);
+            }
         }
     }
 
