@@ -39,9 +39,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private List<Stickman> stickmanList;
     private int maxStickman;
     private boolean isDark = false; // False si light on
+    private Context context;
 
     public GameView(Context context) {
         super(context);
+        this.context = context;
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
         getHolder().addCallback(this);
@@ -172,7 +174,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         for(Stickman stickman : stickmanList) {
-            stickman.update(screenWidth/2, screenHeight/2, centerWidth, centerHeigth, circleRadius, thread);
+            stickman.update(this.context, screenWidth/2, screenHeight/2, centerWidth, centerHeigth, circleRadius, thread);
             if (isDark)
                 canvas.drawRect(stickman.getStickman(), stickman.getPaint());
             else {
