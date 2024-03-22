@@ -36,6 +36,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     private int centerWidth;
     private int centerHeigth;
     private int circleRadius = 50; // Rayon de la boule
+    private int graalradius = 250;
     private int circleCenterX;
     private int circleCenterY;
     private int movementX = 0;
@@ -139,7 +140,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
         }
 
         for(Stickman st : stickmanList){
-            if(stickmanTouchCircle(st, circleCenterX, circleCenterY, circleRadius)){
+            if(stickmanTouchCircle(st, circleCenterX, circleCenterY, circleRadius*2)){
                 score += 3;
                 stickmanList.remove(st);
             }
@@ -184,7 +185,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
             paintDestruction.setColor(Color.YELLOW);
             paintDestruction.setStyle(Paint.Style.STROKE); // Style du contour du cercle
             paintDestruction.setStrokeWidth(5); // Épaisseur
-            canvas.drawCircle(centerWidth, centerHeigth, 250, paintDestruction);
+            canvas.drawCircle(centerWidth, centerHeigth, graalradius, paintDestruction);
 
             // Appliquer le dégradé au halo
             Paint haloPaint = new Paint();
@@ -250,7 +251,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public void paintStickman(Canvas canvas) {
 
         for(Stickman stickman : stickmanList) {
-            stickman.update(this.context, screenWidth/2, screenHeight/2, centerWidth, centerHeigth, isDark);
+            stickman.update(screenWidth/2, screenHeight/2, centerWidth, centerHeigth, graalradius, isDark);
             if(stickman.isInProtectedZone(screenWidth/2, screenHeight/2, circleRadius)) {
                 thread.setRunning(false);
                 Intent intent = new Intent(context, EndActivity.class);
